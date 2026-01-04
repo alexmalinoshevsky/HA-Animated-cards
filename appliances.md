@@ -51,7 +51,7 @@ card_mod:
         {% set ent_progress  = 'sensor.dishwasher_progress' %}
         {% set ent_timerem   = 'sensor.dishwasher_time_remaining' %}
         {% set max_time = 120 %}
-        {% set ent_power     = 'sensor.smart_plug' %} 
+        {% set ent_power     = 'sensor.smart_plug_power' %} 
         
         /* OPTION: Pregress Percentage Sensor (if exists)
         {% set ent_percent   = 'sensor.dishwasher_progress_percantage' %}
