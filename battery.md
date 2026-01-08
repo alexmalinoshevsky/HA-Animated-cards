@@ -15,7 +15,11 @@
 ```
 -->
 
-[< 🏠 Back to Main Repository](./)
+<div align="left">
+<a href="./">
+  <img src="https://img.shields.io/badge/◀_BACK_TO_HOME_Page-2196F3?style=for-the-badge&logoColor=white" height="60" />
+</a>
+</div>
 
 # Home Assistant Animated Battery / Percentage Cards
 
