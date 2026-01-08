@@ -15,9 +15,19 @@
 ```
 -->
 
-# Home Assistant Animated cards
+# 🏠 Home Assistant Animated Cards
 
-Take your Home Assistant dashboard to the next level with dynamic, customizable animated cards that bring your smart home dashboard to life.
+> Take your Home Assistant dashboard to the next level with dynamic, customizable animated cards that bring your smart home dashboard to life.
+
+| 📂 Category | 📝 Description | 🔗 Link |
+| :--- | :--- | :---: |
+| **🏠Home** | main collection| [**You are here**](./README.md) |
+| **🧺 Appliances** | washer, dryer, dishwasher, etc | [**View Page**](./appliances.md) |
+| **🔋 Battery** | Battery level, charging animations | [**View Page**](./battery.md) |
+| **📈 Graph Cards** | Temp, humidity, etc | [**View Page**](./ent-with-graph.md) |
+| **🍄 Legacy** | Mushroom legacy template cards. | [**View Page**](./mushroom-legacy-template-card.md) |
+
+---
 
 Those YouTube Videos
 [Batch 1](https://youtu.be/5vYz37AqSO4) | [Batch 2](https://youtu.be/izx0JMrnhWE) 
