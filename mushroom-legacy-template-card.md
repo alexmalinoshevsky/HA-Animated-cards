@@ -1,4 +1,8 @@
-Those Animations also works with:
+[< 🏠 Back to Main Repository](./)
+
+## BETA
+
+Some of Those Animations also works with:
 
 `mushroom legacy template card`
 
