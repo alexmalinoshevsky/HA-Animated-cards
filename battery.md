@@ -15,6 +15,8 @@
 ```
 -->
 
+[< 🏠 Back to Main Repository](./)
+
 # Home Assistant Animated Battery / Percentage Cards
 
 This [YouTube Video](https://youtu.be/SrFbC1ae35E) explains how to do it.
