@@ -30,6 +30,17 @@ This [YouTube Video](https://youtu.be/SrFbC1ae35E) explains how to do it.
 
 <hr>
 
+> [!NOTE]
+> If you are using the **Sections** view type, you may need to set `rows` to around `1.5` for the card,
+> otherwise the card may appear compressed.
+>
+> ```yaml
+> grid_options:
+>   rows: 1.5
+> ```
+
+<hr>
+
 # Cards:
 
 >Note: Each card has two versions:
