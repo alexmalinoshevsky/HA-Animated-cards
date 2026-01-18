@@ -1944,7 +1944,7 @@ card_mod:
 ---
 
 <details>
-<summary><strong>8 - Combo Washing machine & Dryer (smart plug)</summary>
+<summary><strong>8 - Dumb Combo Washing machine & Dryer (smart plug)</summary>
 
 ```yaml
 type: custom:mushroom-entity-card
