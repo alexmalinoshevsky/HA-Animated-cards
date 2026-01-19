@@ -675,7 +675,7 @@ card_mod:
         {% if is_drying %}
           {% set color = '255, 152, 0' %}   /* Orange (Heat) */
           {% set anim_type = 'steam-rise 2s ease-in-out infinite' %}
-          {% set icon_shake = 'shake 0.8s ease-in-out infinite' %}
+          {% set icon_shake = 'none' %}
           {% set wave_anim = 'wave 4s linear infinite' %}
           {% set overlay_img = 'linear-gradient(0deg, transparent, rgba(255,255,255,0.4), transparent)' %}
         {% elif is_cooling %}
@@ -934,7 +934,7 @@ card_mod:
           /* DRYING MODE: Orange + Steam + Shake */
           {% set color = '255, 152, 0' %} 
           {% set anim_type = 'steam-rise 2s ease-in-out infinite' %}
-          {% set icon_shake = 'shake 0.8s ease-in-out infinite' %}
+          {% set icon_shake = 'none' %}
           {% set wave_anim = 'wave 4s linear infinite' %}
           {% set overlay_img = 'linear-gradient(0deg, transparent, rgba(255,255,255,0.4), transparent)' %}
         
@@ -1770,7 +1770,7 @@ card_mod:
              {% set color = '255, 152, 0' %}   /* Orange */
              {% set anim_type = 'steam-rise 2s ease-in-out infinite' %}
              {% set overlay_img = 'linear-gradient(0deg, transparent, rgba(255,255,255,0.4), transparent)' %}
-             {% set icon_shake = 'shake 0.8s ease-in-out infinite' %} 
+             {% set icon_shake = 'none' %} 
            
            /* --- MEDIUM POWER (TUMBLING/COOLING) --- */
            {% else %}
@@ -2079,7 +2079,7 @@ card_mod:
              {% set color = '255, 152, 0' %}   /* Orange */
              {% set anim_type = 'steam-rise 2s ease-in-out infinite' %}
              {% set overlay_img = 'linear-gradient(0deg, transparent, rgba(255,255,255,0.4), transparent)' %}
-             {% set icon_shake = 'shake 0.8s ease-in-out infinite' if power > 100 else 'wobble 2s ease-in-out infinite' %} 
+             {% set icon_shake = 'none' %} 
            
            {% else %}
              /* === WASHING === */
