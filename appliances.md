@@ -94,24 +94,38 @@ card_mod:
         {% set status = states(ent_progress) %}
         {% set status_clean = status | replace('-', ' ') | title %}
 
-        /* Time Detection (mins vs timestamp) */
+        /* --- DETECT TIME REMAINING FORAMT --- */
         {% set raw_val = states(ent_timerem) | string %}
 
-        /* Check if looks like a timestamp */
+        /* Check if Timestamp */
         {% if '-' in raw_val and ':' in raw_val %}
           {% set end_ts = raw_val | as_datetime %}
           {% if end_ts %}
-             /* Calculate minutes from timestamp */
              {% set time_rem = ((end_ts - now()).total_seconds() / 60) | int %}
           {% else %}
              {% set time_rem = 0 %}
           {% endif %}
+        
+        /* Check if (00:00 or 0:00:00) */
+        {% elif ':' in raw_val %}
+          {% set parts = raw_val.split(':') %}
+          {% if parts | length == 3 %}
+             /* Format H:M:S -> Convert to minutes */
+             {% set time_rem = (parts[0]|int * 60) + (parts[1]|int) + (parts[2]|int / 60) %}
+          {% elif parts | length == 2 %}
+             /* Format H:M -> Convert to minutes */
+             {% set time_rem = (parts[0]|int * 60) + (parts[1]|int) %}
+          {% else %}
+             {% set time_rem = 0 %}
+          {% endif %}
+
+        /* Default to Minutes */
         {% else %}
-          /* Not timestamp? treat as minutes */
           {% set time_rem = raw_val | float(0) | int %}
         {% endif %}
 
-        /* Prevent negative numbers */
+        /* Prevent negative */
+        {% set time_rem = time_rem | int %}
         {% if time_rem < 0 %} 
           {% set time_rem = 0 %} 
         {% endif %}
@@ -340,24 +354,38 @@ card_mod:
         {% set status = states(ent_progress) %}
         {% set status_clean = status | replace('-', ' ') | title %}
 
-        /* Time Detection (mins vs timestamp) */
+        /* --- DETECT TIME REMAINING FORAMT --- */
         {% set raw_val = states(ent_timerem) | string %}
 
-        /* Check if looks like a timestamp */
+        /* Check if Timestamp */
         {% if '-' in raw_val and ':' in raw_val %}
           {% set end_ts = raw_val | as_datetime %}
           {% if end_ts %}
-             /* Calculate minutes from timestamp */
              {% set time_rem = ((end_ts - now()).total_seconds() / 60) | int %}
           {% else %}
              {% set time_rem = 0 %}
           {% endif %}
+        
+        /* Check if (00:00 or 0:00:00) */
+        {% elif ':' in raw_val %}
+          {% set parts = raw_val.split(':') %}
+          {% if parts | length == 3 %}
+             /* Format H:M:S -> Convert to minutes */
+             {% set time_rem = (parts[0]|int * 60) + (parts[1]|int) + (parts[2]|int / 60) %}
+          {% elif parts | length == 2 %}
+             /* Format H:M -> Convert to minutes */
+             {% set time_rem = (parts[0]|int * 60) + (parts[1]|int) %}
+          {% else %}
+             {% set time_rem = 0 %}
+          {% endif %}
+
+        /* Default to Minutes */
         {% else %}
-          /* Not timestamp? treat as minutes */
           {% set time_rem = raw_val | float(0) | int %}
         {% endif %}
 
         /* Prevent negative numbers */
+        {% set time_rem = time_rem | int %}
         {% if time_rem < 0 %} 
           {% set time_rem = 0 %} 
         {% endif %}
@@ -611,24 +639,38 @@ card_mod:
         {% set status = states(ent_progress) %}
         {% set status_clean = status | replace('-', ' ') | title %}
 
-        /* Time Detection (mins vs timestamp) */
+        /* --- DETECT TIME REMAINING FORAMT --- */
         {% set raw_val = states(ent_timerem) | string %}
 
-        /* Check if looks like a timestamp */
+        /* Check if Timestamp */
         {% if '-' in raw_val and ':' in raw_val %}
           {% set end_ts = raw_val | as_datetime %}
           {% if end_ts %}
-             /* Calculate minutes from timestamp */
              {% set time_rem = ((end_ts - now()).total_seconds() / 60) | int %}
           {% else %}
              {% set time_rem = 0 %}
           {% endif %}
+        
+        /* Check if (00:00 or 0:00:00) */
+        {% elif ':' in raw_val %}
+          {% set parts = raw_val.split(':') %}
+          {% if parts | length == 3 %}
+             /* Format H:M:S -> Convert to minutes */
+             {% set time_rem = (parts[0]|int * 60) + (parts[1]|int) + (parts[2]|int / 60) %}
+          {% elif parts | length == 2 %}
+             /* Format H:M -> Convert to minutes */
+             {% set time_rem = (parts[0]|int * 60) + (parts[1]|int) %}
+          {% else %}
+             {% set time_rem = 0 %}
+          {% endif %}
+
+        /* Default to Minutes */
         {% else %}
-          /* Not timestamp? treat as minutes */
           {% set time_rem = raw_val | float(0) | int %}
         {% endif %}
 
         /* Prevent negative numbers */
+        {% set time_rem = time_rem | int %}
         {% if time_rem < 0 %} 
           {% set time_rem = 0 %} 
         {% endif %}
@@ -864,24 +906,38 @@ card_mod:
         {% set status = states(ent_progress) %}
         {% set status_clean = status | replace('-', ' ') | title %}
 
-        /* Time Detection (mins vs timestamp) */
+        /* --- DETECT TIME REMAINING FORAMT --- */
         {% set raw_val = states(ent_timerem) | string %}
 
-        /* Check if looks like a timestamp */
+        /* Check if Timestamp */
         {% if '-' in raw_val and ':' in raw_val %}
           {% set end_ts = raw_val | as_datetime %}
           {% if end_ts %}
-             /* Calculate minutes from timestamp */
              {% set time_rem = ((end_ts - now()).total_seconds() / 60) | int %}
           {% else %}
              {% set time_rem = 0 %}
           {% endif %}
+        
+        /* Check if (00:00 or 0:00:00) */
+        {% elif ':' in raw_val %}
+          {% set parts = raw_val.split(':') %}
+          {% if parts | length == 3 %}
+             /* Format H:M:S -> Convert to minutes */
+             {% set time_rem = (parts[0]|int * 60) + (parts[1]|int) + (parts[2]|int / 60) %}
+          {% elif parts | length == 2 %}
+             /* Format H:M -> Convert to minutes */
+             {% set time_rem = (parts[0]|int * 60) + (parts[1]|int) %}
+          {% else %}
+             {% set time_rem = 0 %}
+          {% endif %}
+
+        /* Default to Minutes */
         {% else %}
-          /* Not timestamp? treat as minutes */
           {% set time_rem = raw_val | float(0) | int %}
         {% endif %}
 
         /* Prevent negative numbers */
+        {% set time_rem = time_rem | int %}
         {% if time_rem < 0 %} 
           {% set time_rem = 0 %} 
         {% endif %}
