@@ -67,6 +67,10 @@ background: #1C1C1C !important;
 ## Batch 4:
 ![gif-2](https://github.com/user-attachments/assets/a7c3671a-11bd-4725-9765-536dbc835220)
 
+<!--
+## Batch 5:
+![gif-batch5](https://github.com/user-attachments/assets/0a432feb-ed58-4dae-b88d-995f30331e04)
+-->
 
 # Cards:
 
@@ -11362,6 +11366,2061 @@ card_mod:
 
 ```
 </details>
+
+<!--
+## $${\color{yellow}Batch \space 5}$$
+
+<details>
+<summary><strong>68 - Printer (COLORS Ink) 1</strong></summary>
+
+```yaml
+type: custom:mushroom-entity-card
+entity: sensor.brother_printer
+name: Printer (COLORS Ink)
+icon: empty
+primary_info: name
+secondary_info: state
+tap_action:
+  action: more-info
+card_mod:
+  style:
+    .: |
+      ha-card {
+        /* ======================== */
+        /* USER CONFIG              */
+        /* ======================== */
+        
+        /* 1. Set INK ENTITIES */
+        {% set ink_c_ent = 'sensor.printer_c_ink' %}
+        {% set ink_m_ent = 'sensor.printer_m_ink' %}
+        {% set ink_y_ent = 'sensor.printer_y_ink' %}
+        {% set ink_k_ent = 'sensor.printer_k_ink' %}
+
+        {% set states_list = ['printing', 'copying', 'scanning', 'running'] %}
+        
+        /* 2. Set Shape Size */
+        --set-icon-size: 68px;
+        
+        /* 3. Set Printing Animations 
+           Options: 'laser', 'glow', 'icon_glow', 'none' 
+        */
+        {% set printing_anim = 'icon_glow' %}
+
+        /* 4. Set threshold */
+        {% set low_threshold = 15 %}
+        
+        /* ========================== */
+
+        {% set ink_c = states(ink_c_ent) | int(0) %}
+        {% set ink_m = states(ink_m_ent) | int(0) %}
+        {% set ink_y = states(ink_y_ent) | int(0) %}
+        {% set ink_k = states(ink_k_ent) | int(0) %}
+        
+        {% set status = states(config.entity) | lower %}
+        {% set is_printing = status in states_list %}
+        {% set low_ink = (ink_c < low_threshold) or (ink_m < low_threshold) or (ink_y < low_threshold) or (ink_k < low_threshold) %}
+        
+        /* Determine Status Color & Text */
+        {% if is_printing %}
+           {% set status_color = '33, 150, 243' %}
+           {% set status_text = 'PRINTING' %}
+           {% set anim_badge = 'none' %}
+        {% elif low_ink %}
+           {% set status_color = '244, 67, 54' %} 
+           {% set status_text = 'LOW INK' %}
+           {% set anim_badge = 'pulse-alert 2s infinite' %}
+        {% else %}
+           {% set status_color = '76, 175, 80' %}
+           {% set status_text = 'READY' %}
+           {% set anim_badge = 'none' %}
+        {% endif %}
+
+        /* Logic for Animation Modes */
+        {% if is_printing %}
+          /* Card Scanner (Whole Card) */
+          {% if printing_anim == 'laser' %}
+            {% set card_scan_display = 'block' %}
+            {% set card_scan_grad = 'linear-gradient(90deg, transparent 20%, rgba(33, 150, 243, 0.2) 45%, rgba(33, 150, 243, 0.9) 50%, rgba(33, 150, 243, 0.2) 55%, transparent 80%)' %}
+            {% set icon_scan_anim = 'none' %}
+            {% set icon_glass_bg = 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 40%, transparent 60%, rgba(255,255,255,0.05) 100%)' %}
+            {% set icon_box_shadow = '0 4px 8px rgba(0,0,0,0.3)' %}
+          
+          {% elif printing_anim == 'glow' %}
+            {% set card_scan_display = 'block' %}
+            {% set card_scan_grad = 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent)' %}
+            {% set icon_scan_anim = 'none' %}
+            {% set icon_glass_bg = 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 40%, transparent 60%, rgba(255,255,255,0.05) 100%)' %}
+            {% set icon_box_shadow = '0 4px 8px rgba(0,0,0,0.3)' %}
+
+          {% elif printing_anim == 'icon_glow' %}
+            /* Icon Only Scanner */
+            {% set card_scan_display = 'none' %}
+            {% set card_scan_grad = 'none' %}
+            /* Dynamic Icon Variables */
+            {% set icon_scan_anim = 'icon-sweep 1.5s ease-in-out infinite' %}
+            {% set icon_glass_bg = 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 40%, rgba(255,255,255,0.9) 50%, rgba(255,255,255,0.1) 60%, transparent 100%)' %}
+            {% set icon_box_shadow = '0 0 15px rgba(33, 150, 243, 0.6), inset 0 0 10px rgba(33, 150, 243, 0.2)' %}
+
+          {% else %}
+            /* None */
+            {% set card_scan_display = 'none' %}
+            {% set card_scan_grad = 'none' %}
+            {% set icon_scan_anim = 'none' %}
+            {% set icon_glass_bg = 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 40%, transparent 60%, rgba(255,255,255,0.05) 100%)' %}
+            {% set icon_box_shadow = '0 4px 8px rgba(0,0,0,0.3)' %}
+          {% endif %}
+
+        {% else %}
+          /* Not Printing (Idle) */
+          {% set card_scan_display = 'none' %}
+          {% set card_scan_grad = 'none' %}
+          {% set icon_scan_anim = 'none' %}
+          {% set icon_glass_bg = 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 40%, transparent 60%, rgba(255,255,255,0.05) 100%)' %}
+          {% set icon_box_shadow = '0 4px 8px rgba(0,0,0,0.3)' %}
+        {% endif %}
+
+        /* =============================== */
+        /* CSS VARIABLES                 */
+        /* =============================== */
+        
+        --level-c: {{ ink_c }}%;
+        --level-m: {{ ink_m }}%;
+        --level-y: {{ ink_y }}%;
+        --level-k: {{ ink_k }}%;
+        
+        --card-status-color: {{ status_color }};
+        --card-badge-anim: {{ anim_badge }};
+        --badge-content: "{{ status_text }}";
+        
+        /* Card Scanner Vars */
+        --scanner-display: {{ card_scan_display }};
+        --scanner-bg: {{ card_scan_grad }};
+        
+        /* Icon Scanner Vars */
+        --icon-glass-bg: {{ icon_glass_bg }};
+        --icon-anim: {{ icon_scan_anim }};
+        --icon-shadow: {{ icon_box_shadow }};
+        
+        transition: all 0.5s ease;
+        overflow: hidden; 
+        position: relative;
+      }
+
+      /* --- STATUS BADGE --- */
+      ha-card::before {
+        content: var(--badge-content);
+        position: absolute;
+        top: 10px; right: 10px;
+        font-size: 10px;
+        font-weight: 900;
+        letter-spacing: 0.5px;
+        
+        color: rgb(var(--card-status-color));
+        background: rgba(var(--card-status-color), 0.15);
+        border: 1px solid rgba(var(--card-status-color), 0.3);
+        
+        box-shadow: 0 0 10px rgba(var(--card-status-color), 0.4), inset 0 0 5px rgba(var(--card-status-color), 0.1);
+        
+        padding: 4px 8px;
+        border-radius: 6px;
+        z-index: 0; 
+        animation: var(--card-badge-anim);
+      }
+
+      /* --- CARD SCANNER ANIMATION (Whole Card) --- */
+      ha-card::after {
+        content: "";
+        display: var(--scanner-display);
+        position: absolute;
+        top: 0; left: 0; bottom: 0;
+        width: 30%;
+        background: var(--scanner-bg);
+        filter: blur(5px);
+        z-index: 1; 
+        transform: skewX(-10deg) translateX(-200%);
+        animation: scanner-sweep 2s ease-in-out infinite;
+        pointer-events: none;
+      }
+
+      /* --- ANIMATIONS --- */
+      @keyframes pulse-alert {
+        0% { box-shadow: 0 0 0 0 rgba(var(--card-status-color), 0.7); transform: scale(1); }
+        50% { transform: scale(1.05); }
+        70% { box-shadow: 0 0 0 10px rgba(var(--card-status-color), 0); }
+        100% { box-shadow: 0 0 0 0 rgba(var(--card-status-color), 0); transform: scale(1); }
+      }
+
+      @keyframes scanner-sweep {
+        0% { left: -50%; opacity: 0; }
+        10% { opacity: 1; }
+        90% { opacity: 1; }
+        100% { left: 150%; opacity: 0; }
+      }
+    mushroom-shape-icon$: |
+      .shape {
+        color: transparent !important;
+        --icon-size: var(--set-icon-size);
+        border-radius: 12px !important; 
+        background: #222 !important;     
+        border: 1px solid rgba(255,255,255,0.1);
+        position: relative;
+        overflow: hidden;
+        /* Dynamic Shadow/Glow */
+        box-shadow: var(--icon-shadow) !important;
+        transition: box-shadow 0.3s ease;
+      }
+
+      /* The Ink Bars */
+      .shape::before {
+        content: '';
+        position: absolute;
+        inset: 2px;
+        border-radius: 8px;
+        z-index: 2; 
+        
+        background-image: 
+          linear-gradient(to top, #00BCD4 var(--level-c), rgba(0, 188, 212, 0.2) var(--level-c)),
+          linear-gradient(to top, #E91E63 var(--level-m), rgba(233, 30, 99, 0.2) var(--level-m)),
+          linear-gradient(to top, #FFEB3B var(--level-y), rgba(255, 235, 59, 0.2) var(--level-y)),
+          linear-gradient(to top, #9E9E9E var(--level-k), rgba(158, 158, 158, 0.2) var(--level-k));
+        
+        background-size: 23% 100%;
+        background-repeat: no-repeat;
+        background-position: 0% 0, 34% 0, 67% 0, 100% 0;
+        filter: drop-shadow(0 0 1px rgba(0,0,0,0.5));
+      }
+
+      /* Glass Overlay OR Scanner Beam */
+      .shape::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: 3;
+        /* Dynamic Background (Glass or Beam) */
+        background: var(--icon-glass-bg);
+        /* Dynamic Animation */
+        animation: var(--icon-anim);
+        pointer-events: none;
+        background-size: 200% 100%; /* Important for the sweep anim */
+      }
+
+      @keyframes icon-sweep {
+        0% { background-position: 150% 0; }
+        100% { background-position: -50% 0; }
+      }
+
+      ha-icon { display: none; }
+
+```
+</details>
+
+<details>
+<summary><strong>69 - Printer (COLORS Ink) 2</strong></summary>
+
+```yaml
+type: custom:mushroom-entity-card
+entity: sensor.brother_printer
+tap_action:
+  action: more-info
+name: Printer (COLORS Ink)
+primary_info: name
+secondary_info: state
+icon: mdi:printer
+icon_color: white
+card_mod:
+  style:
+    .: |
+      ha-card {
+        /* ========================== */
+        /* USER CONFIG               */
+        /* ========================== */
+        
+        /* 1. Set INK ENTITIES */
+        {% set ink_c_ent = 'sensor.printer_c_ink' %}
+        {% set ink_m_ent = 'sensor.printer_m_ink' %}
+        {% set ink_y_ent = 'sensor.printer_y_ink' %}
+        {% set ink_k_ent = 'sensor.printer_k_ink' %}
+
+        {% set states_list = ['printing', 'copying', 'scanning', 'running'] %}
+        
+        /* 2. Set Icon Size */
+        --set-icon-size: 68px;
+        
+        /* 3. Set Printing Animations 
+           Options: 'laser', 'glow', 'icon_glow', 'none' 
+        */
+        {% set printing_anim = 'icon_glow' %}
+
+        /* 4. Set threshold */
+        {% set low_threshold = 15 %}
+        
+        /* =========================== */
+        
+        /* Get Levels */
+        {% set c = states(ink_c_ent) | float(0) if states(ink_c_ent) | is_number else 0 %}
+        {% set m = states(ink_m_ent) | float(0) if states(ink_m_ent) | is_number else 0 %}
+        {% set y = states(ink_y_ent) | float(0) if states(ink_y_ent) | is_number else 0 %}
+        {% set k = states(ink_k_ent) | float(0) if states(ink_k_ent) | is_number else 0 %}
+        
+        /* Determine State */
+        {% set status = states(config.entity) | lower %}
+        {% set is_printing = status in states_list %}
+        {% set is_offline = status in ['unavailable', 'unknown', 'off'] %}
+        {% set is_low = (c < low_threshold and c > 0) or (m < low_threshold and m > 0) or (y < low_threshold and y > 0) or (k < low_threshold and k > 0) %}
+        
+        /* Determine Badge & Colors */
+        {% if is_offline %}
+           {% set badge = "OFFLINE" %}
+           {% set b_color = "150, 150, 150" %}
+           {% set b_anim = "none" %}
+           {% set i_shake = "none" %}
+        {% elif is_printing %}
+           {% set badge = "PRINTING" %}
+           {% set b_color = "33, 150, 243" %}
+           {% set b_anim = "none" %}
+           {% set i_shake = "shake-print 1s ease-in-out infinite" %}
+        {% elif is_low %}
+           {% set badge = "LOW INK" %}
+           {% set b_color = "244, 67, 54" %}
+           {% set b_anim = "badge-pulse 2s infinite" %}
+           {% set i_shake = "none" %}
+        {% else %}
+           {% set badge = "READY" %}
+           {% set b_color = "76, 175, 80" %}
+           {% set b_anim = "none" %}
+           {% set i_shake = "idle-breathe 4s ease-in-out infinite" %}
+        {% endif %}
+
+        /* LOGIC FOR SCANNER/GLOW ANIMATIONS */
+        {% if is_printing %}
+          /* Card Scanner (Whole Card) */
+          {% if printing_anim == 'laser' %}
+            {% set card_scan_display = 'block' %}
+            {% set card_scan_grad = 'linear-gradient(90deg, transparent 20%, rgba(33, 150, 243, 0.2) 45%, rgba(33, 150, 243, 0.9) 50%, rgba(33, 150, 243, 0.2) 55%, transparent 80%)' %}
+            {% set icon_scan_anim = 'none' %}
+            {% set icon_glass_bg = 'transparent' %}
+            {% set icon_box_shadow = 'none' %}
+          
+          {% elif printing_anim == 'glow' %}
+            {% set card_scan_display = 'block' %}
+            {% set card_scan_grad = 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent)' %}
+            {% set icon_scan_anim = 'none' %}
+            {% set icon_glass_bg = 'transparent' %}
+            {% set icon_box_shadow = 'none' %}
+
+          {% elif printing_anim == 'icon_glow' %}
+            /* Icon Only Scanner */
+            {% set card_scan_display = 'none' %}
+            {% set card_scan_grad = 'none' %}
+            /* Dynamic Icon Variables */
+            {% set icon_scan_anim = 'icon-sweep 1.5s ease-in-out infinite' %}
+            {% set icon_glass_bg = 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 40%, rgba(255,255,255,0.9) 50%, rgba(255,255,255,0.1) 60%, transparent 100%)' %}
+            {% set icon_box_shadow = '0 0 15px rgba(33, 150, 243, 0.6), inset 0 0 10px rgba(33, 150, 243, 0.2)' %}
+
+          {% else %}
+            /* None */
+            {% set card_scan_display = 'none' %}
+            {% set card_scan_grad = 'none' %}
+            {% set icon_scan_anim = 'none' %}
+            {% set icon_glass_bg = 'transparent' %}
+            {% set icon_box_shadow = 'none' %}
+          {% endif %}
+
+        {% else %}
+          /* Not Printing (Idle) */
+          {% set card_scan_display = 'none' %}
+          {% set card_scan_grad = 'none' %}
+          {% set icon_scan_anim = 'none' %}
+          {% set icon_glass_bg = 'transparent' %}
+          {% set icon_box_shadow = 'none' %}
+        {% endif %}
+
+        /* ============================= */
+        /* CSS STYLING                */
+        /* ============================= */
+        
+        /* DEFINE VARIABLES */
+        --c-level: {{ c }}%;
+        --m-level: {{ m }}%;
+        --y-level: {{ y }}%;
+        --k-level: {{ k }}%;
+        
+        --scanner-display: {{ card_scan_display }};
+        --scanner-bg: {{ card_scan_grad }};
+        
+        --icon-anim: {{ icon_scan_anim }};
+        --icon-glass: {{ icon_glass_bg }};
+        --icon-shadow: {{ icon_box_shadow }};
+        
+        /* CARD BASE */
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        z-index: 1;
+        
+        /* THE INK BARS (Background Layer) */
+        background-image: 
+          /* Gloss Overlay (Reflections) */
+          linear-gradient(90deg, 
+            rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.05) 24%, transparent 25%,
+            rgba(255,255,255,0.05) 26%, rgba(255,255,255,0.05) 49%, transparent 50%,
+            rgba(255,255,255,0.05) 51%, rgba(255,255,255,0.05) 74%, transparent 75%,
+            rgba(255,255,255,0.05) 76%, rgba(255,255,255,0.05) 100%),
+            
+          /* Cyan */
+          linear-gradient(to top, rgba(0, 255, 255, 0.6) var(--c-level), rgba(0, 255, 255, 0.1) var(--c-level)),
+          /* Magenta */
+          linear-gradient(to top, rgba(255, 0, 255, 0.6) var(--m-level), rgba(255, 0, 255, 0.1) var(--m-level)),
+          /* Yellow */
+          linear-gradient(to top, rgba(255, 255, 0, 0.6) var(--y-level), rgba(255, 255, 0, 0.1) var(--y-level)),
+          /* Black */
+          linear-gradient(to top, rgba(0, 0, 0, 0.8) var(--k-level), rgba(0, 0, 0, 0.2) var(--k-level))
+        !important;
+        
+        background-size: 
+          100% 100%, /* Gloss covers all */
+          25% 100%,  /* C */
+          25% 100%,  /* M */
+          25% 100%,  /* Y */
+          25% 100%   /* K */
+        !important;
+        
+        background-position: 
+          0 0,
+          0% 0, 
+          33.33% 0, 
+          66.66% 0, 
+          100% 0 
+        !important;
+        
+        background-repeat: no-repeat !important;
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+
+      /* THE SCANNER LIGHT Card */
+      ha-card::before {
+        content: "";
+        display: var(--scanner-display);
+        position: absolute;
+        top: 0; left: 0; bottom: 0;
+        width: 30%; /* Beam width */
+        
+        /* Dynamic Gradient */
+        background: var(--scanner-bg);
+        
+        filter: blur(5px);
+        z-index: 0;
+        transform: skewX(-20deg) translateX(-200%); /* Start off screen */
+        animation: scanner-sweep 2.5s ease-in-out infinite;
+        pointer-events: none;
+      }
+
+      /* THE BADGE */
+      ha-card::after {
+        content: "{{ badge }}";
+        position: absolute;
+        top: 10px; 
+        right: 10px;
+        z-index: 5;
+        
+        background: rgba({{ b_color }}, 0.2);
+        color: rgb({{ b_color }});
+        border: 1px solid rgba({{ b_color }}, 0.5);
+        
+        /* THE GLOW EFFECT */
+        box-shadow: 0 0 10px rgba({{ b_color }}, 0.4), inset 0 0 5px rgba({{ b_color }}, 0.1);
+        
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        padding: 3px 8px;
+        border-radius: 6px;
+        pointer-events: none;
+        
+        animation: {{ b_anim }};
+      }
+
+      /* ANIMATIONS (MAIN CARD) */
+      @keyframes scanner-sweep {
+        0% { left: -50%; opacity: 0; }
+        10% { opacity: 1; }
+        90% { opacity: 1; }
+        100% { left: 150%; opacity: 0; }
+      }
+
+      @keyframes badge-pulse {
+        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba({{ b_color }}, 0.7); }
+        70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba({{ b_color }}, 0); }
+        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba({{ b_color }}, 0); }
+      }
+
+      /* Ensure text is readable */
+      mushroom-state-info {
+        z-index: 10;
+        text-shadow: 0 1px 4px rgba(0,0,0,0.8); /* Important for light ink backgrounds */
+      }
+      ha-state-icon {
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+      }
+    mushroom-shape-icon$: |
+      .shape {
+        --icon-size: var(--set-icon-size);
+        position: relative;
+        overflow: hidden;
+        
+        /* Shake Animation */
+        animation: {{ i_shake }} !important;
+        
+        /* Glow Shadow icon */
+        box-shadow: var(--icon-shadow) !important;
+        transition: box-shadow 0.3s ease;
+      }
+
+      /* Scanner Icon */
+      .shape::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: 20;
+        
+        background: var(--icon-glass);
+        animation: var(--icon-anim);
+        
+        background-size: 200% 100%;
+        pointer-events: none;
+      }
+
+      /* KEYFRAMES */
+      @keyframes icon-sweep {
+        0% { background-position: 150% 0; }
+        100% { background-position: -50% 0; }
+      }
+      @keyframes shake-print {
+        0% { transform: translate(0, 0); }
+        20% { transform: translate(-2px, 0); }
+        40% { transform: translate(2px, 0); }
+        60% { transform: translate(-2px, 0); }
+        80% { transform: translate(2px, 0); }
+        100% { transform: translate(0, 0); }
+      }
+      @keyframes idle-breathe {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.8; transform: scale(0.95); }
+      }
+
+```
+</details>
+
+<details>
+<summary><strong>70 - Printer (Black Only Ink)</strong></summary>
+
+```yaml
+type: custom:mushroom-entity-card
+entity: sensor.brother_printer
+name: Printer (Black Only Ink)
+icon: mdi:printer
+primary_info: name
+secondary_info: state
+tap_action:
+  action: more-info
+icon_color: white
+card_mod:
+  style:
+    .: |
+      ha-card {
+        /* ========================= */
+        /* USER CONFIG               */
+        /* ========================= */
+        
+        /* 1. Set INK ENTITY */
+        {% set ink_entity = 'sensor.printer_k_ink' %}
+        
+        {% set states_list = ['printing', 'copying', 'scanning', 'running'] %}
+        
+        /* 2. Set Icon Size */
+        --set-icon-size: 68px;
+        
+        /* 3. Set Printing Animations 
+           Options: 'laser', 'glow', 'icon_glow', 'none' 
+        */
+        {% set printing_anim = 'icon_glow' %}
+
+        /* 4. Set threshold */
+        {% set low_threshold = 15 %}
+
+        /* 5. Set INK COLOR THEME */
+        /* Options: 'black', 'grey', 'white' */
+        {% set ink_theme = 'grey' %}
+        
+        /* ========================== */
+        
+        {% set level = states(ink_entity) | int(0) if states(ink_entity) | is_number else 0 %}
+        
+        /* Determine Status */
+        {% set status = states(config.entity) | lower %}
+        {% set is_printing = status in states_list %}
+        {% set is_offline = status in ['unavailable', 'unknown', 'off'] %}
+        {% set is_low = level < low_threshold %}
+        
+        /* Determine Colors based on Theme */
+        {% if ink_theme == 'white' %}
+           {% set ink_rgb = '220, 220, 220' %}
+           {% set icon_contrast = '50, 50, 50' %} 
+        {% elif ink_theme == 'grey' %}
+           {% set ink_rgb = '100, 100, 100' %}
+           {% set icon_contrast = '255, 255, 255' %}
+        {% else %} /* Black */
+           {% set ink_rgb = '20, 20, 20' %}
+           {% set icon_contrast = '255, 255, 255' %}
+        {% endif %}
+
+        /* Badge Logic (Status + Percentage) */
+        {% if is_offline %}
+           {% set badge_text = "OFFLINE" %}
+           {% set s_color = "150, 150, 150" %}
+           {% set b_anim = "none" %}
+           {% set shape_shake = "none" %}
+        {% elif is_printing %}
+           {% set badge_text = "PRINTING • " ~ level ~ "%" %}
+           {% set s_color = "33, 150, 243" %}
+           {% set b_anim = "none" %}
+           {% set shape_shake = "shake-print 1s ease-in-out infinite" %}
+        {% elif is_low %}
+           {% set badge_text = "LOW INK • " ~ level ~ "%" %}
+           {% set s_color = "244, 67, 54" %}
+           {% set b_anim = "badge-pulse 2s infinite" %}
+           {% set shape_shake = "none" %}
+        {% else %}
+           {% set badge_text = "READY • " ~ level ~ "%" %}
+           {% set s_color = "76, 175, 80" %}
+           {% set b_anim = "none" %}
+           {% set shape_shake = "idle-breathe 4s ease-in-out infinite" %}
+        {% endif %}
+        
+        /* LOGIC FOR SCANNER/GLOW ANIMATIONS 
+           (Merged from Source Card)
+        */
+        {% if is_printing %}
+          /* Card Scanner (Whole Card) */
+          {% if printing_anim == 'laser' %}
+            {% set card_scan_display = 'block' %}
+            {% set card_scan_grad = 'linear-gradient(90deg, transparent 20%, rgba(33, 150, 243, 0.2) 45%, rgba(33, 150, 243, 0.9) 50%, rgba(33, 150, 243, 0.2) 55%, transparent 80%)' %}
+            {% set icon_scan_anim = 'none' %}
+            {% set icon_glass_bg = 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 40%, transparent 60%, rgba(255,255,255,0.05) 100%)' %}
+            {% set icon_box_shadow = 'none' %}
+          
+          {% elif printing_anim == 'glow' %}
+            {% set card_scan_display = 'block' %}
+            {% set card_scan_grad = 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent)' %}
+            {% set icon_scan_anim = 'none' %}
+            {% set icon_glass_bg = 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 40%, transparent 60%, rgba(255,255,255,0.05) 100%)' %}
+            {% set icon_box_shadow = 'none' %}
+
+          {% elif printing_anim == 'icon_glow' %}
+            /* Icon Only Scanner */
+            {% set card_scan_display = 'none' %}
+            {% set card_scan_grad = 'none' %}
+            /* Dynamic Icon Variables */
+            {% set icon_scan_anim = 'icon-sweep 1.5s ease-in-out infinite' %}
+            {% set icon_glass_bg = 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 40%, rgba(255,255,255,0.9) 50%, rgba(255,255,255,0.1) 60%, transparent 100%)' %}
+            {% set icon_box_shadow = '0 0 15px rgba(33, 150, 243, 0.6), inset 0 0 10px rgba(33, 150, 243, 0.2)' %}
+
+          {% else %}
+            /* None */
+            {% set card_scan_display = 'none' %}
+            {% set card_scan_grad = 'none' %}
+            {% set icon_scan_anim = 'none' %}
+            {% set icon_glass_bg = 'transparent' %}
+            {% set icon_box_shadow = 'none' %}
+          {% endif %}
+
+        {% else %}
+          /* Not Printing (Idle) */
+          {% set card_scan_display = 'none' %}
+          {% set card_scan_grad = 'none' %}
+          {% set icon_scan_anim = 'none' %}
+          {% set icon_glass_bg = 'transparent' %}
+          {% set icon_box_shadow = 'none' %}
+        {% endif %}
+
+        /* =========================*/
+        /* CSS VARIABLES           */
+        /* ======================== */
+        --ink-level: {{ level }}%;
+        --ink-rgb: {{ ink_rgb }};
+        --icon-color: {{ icon_contrast }};
+        
+        --status-color: {{ s_color }};
+        --badge-content: "{{ badge_text }}";
+        --badge-anim: {{ b_anim }};
+        
+        /* Scanner/Glow Vars */
+        --scanner-display: {{ card_scan_display }};
+        --scanner-bg: {{ card_scan_grad }};
+        
+        --icon-glass-bg: {{ icon_glass_bg }};
+        --icon-anim: {{ icon_scan_anim }};
+        --icon-shadow: {{ icon_box_shadow }};
+        
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+
+      /*  BADGE  */
+      ha-card::before {
+        content: var(--badge-content);
+        position: absolute;
+        top: 10px; right: 10px;
+        z-index: 0;
+        
+        background: rgba(var(--status-color), 0.15);
+        color: rgb(var(--status-color));
+        border: 1px solid rgba(var(--status-color), 0.3);
+        box-shadow: 0 0 10px rgba(var(--status-color), 0.3);
+        
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        padding: 3px 8px;
+        border-radius: 6px;
+        pointer-events: none;
+        animation: var(--badge-anim);
+      }
+
+      /* SCANNER BEAM (Card Level) */
+      ha-card::after {
+        content: "";
+        display: var(--scanner-display);
+        position: absolute;
+        top: 0; left: 0; bottom: 0;
+        width: 30%;
+        background: var(--scanner-bg);
+        filter: blur(5px);
+        z-index: 0;
+        transform: skewX(-20deg) translateX(-200%);
+        animation: scanner-sweep 2.5s ease-in-out infinite;
+        pointer-events: none;
+      }
+
+      @keyframes scanner-sweep {
+        0% { left: -50%; opacity: 0; }
+        10% { opacity: 1; }
+        90% { opacity: 1; }
+        100% { left: 150%; opacity: 0; }
+      }
+
+      @keyframes badge-pulse {
+        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(var(--status-color), 0.7); }
+        70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(var(--status-color), 0); }
+        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(var(--status-color), 0); }
+      }
+    mushroom-shape-icon$: |
+      .shape {
+        --icon-size: var(--set-icon-size);
+        
+        background: rgba(var(--ink-rgb), 0.15) !important;
+        border: 1px solid rgba(var(--ink-rgb), 0.3);
+        border-radius: 12px !important;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        /* Shake Animation + Dynamic Shadow */
+        animation: {{ shape_shake }} !important;
+        box-shadow: var(--icon-shadow) !important;
+        transition: box-shadow 0.3s ease;
+      }
+
+      /* THE INK FILL (Bottom Layer) */
+      .shape::before {
+        content: '';
+        position: absolute;
+        bottom: 0; left: 0; right: 0;
+        
+        /* Height based on percentage */
+        height: var(--ink-level);
+        
+        /* Solid color fill with gradient fade at top */
+        background: linear-gradient(to top, 
+          rgba(var(--ink-rgb), 1) 0%, 
+          rgba(var(--ink-rgb), 0.8) 100%
+        );
+        
+        transition: height 1s cubic-bezier(0.25, 0.8, 0.25, 1);
+        z-index: 0;
+      }
+
+      /* GLOW EFFECT */
+      .shape::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        background: var(--icon-glass-bg);
+        animation: var(--icon-anim);
+        pointer-events: none;
+        background-size: 200% 100%;
+      }
+
+      ha-icon {
+        z-index: 5; /* Sit on top of ink and glow */
+        color: rgb(var(--icon-color)) !important;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+      }
+
+      /* KEYFRAMES */
+      @keyframes shake-print {
+        0% { transform: translate(0, 0); }
+        20% { transform: translate(-2px, 0); }
+        40% { transform: translate(2px, 0); }
+        60% { transform: translate(-2px, 0); }
+        80% { transform: translate(2px, 0); }
+        100% { transform: translate(0, 0); }
+      }
+
+      @keyframes icon-sweep {
+        0% { background-position: 150% 0; }
+        100% { background-position: -50% 0; }
+      }
+
+      @keyframes idle-breathe {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(0.96); opacity: 0.9; }
+      }
+
+```
+</details>
+
+<details>
+<summary><strong>71 - Motion</strong></summary>
+
+```yaml
+type: custom:mushroom-entity-card
+entity: binary_sensor.pir_gate_occupancy
+name: Motion Sensor
+icon: mdi:motion-sensor
+primary_info: name
+secondary_info: state
+tap_action:
+  action: more-info
+icon_color: light-grey
+card_mod:
+  style:
+    .: |
+      ha-card {
+        /* ========================== */
+        /* USER CONFIG                */
+        /* ========================== */
+        
+        /* 1. Change active state? */
+        {% set active_state = 'on' %}
+
+        /* 2. Icon Size */
+        --custom-icon-size: 65px;
+
+        /* 3. Colors (RGB) */
+        {% set color_detected = '255, 50, 50' %} /* Redd */
+        {% set color_scanning = '0, 200, 255' %} /* Blue */
+        
+        /* 4. Badge Text */
+        {% set text_detected = 'DETECTED' %}
+        {% set text_scanning = 'SCANNING' %}
+        
+        /* ========================== */
+
+        {% set is_active = states(config.entity) == active_state %}
+
+        {% if is_active %}
+           {% set color = color_detected %}
+           {% set badge = text_detected %}
+           {% set bg_image = 'radial-gradient(circle at center, rgba('~color~', 0.15) 0%, transparent 70%)' %}
+        {% else %}
+           {% set color = color_scanning %}
+           {% set badge = text_scanning %}
+           {% set bg_image = 'none' %}
+        {% endif %}
+
+        /* --- CSS VARIABLES PASSING --- */
+        --sonar-color: {{ color }};
+        --sonar-bg: {{ bg_image }};
+        --badge-text: "{{ badge }}";
+        
+        /* Animation Selectors */
+        --anim-sweep: {{ 'block' if not is_active else 'none' }};
+        --anim-pulse: {{ 'block' if is_active else 'none' }};
+        
+        /* --- CORE CARD STYLING --- */
+
+        background-image: var(--sonar-bg) !important;
+        transition: background-image 0.5s ease;
+        border-radius: 12px;
+        border: none;
+        overflow: hidden;
+      }
+
+      /* --- STATUS BADGE (Top Right) --- */
+      ha-card::before {
+        content: var(--badge-text);
+        position: absolute;
+        top: 10px; right: 10px;
+        font-size: 10px;
+        font-weight: 900;
+        letter-spacing: 1px;
+        color: rgb(var(--sonar-color));
+        background: rgba(var(--sonar-color), 0.15);
+        border: 1px solid rgba(var(--sonar-color), 0.3);
+        box-shadow: 0 0 10px rgba(var(--sonar-color), 0.2);
+        padding: 3px 8px;
+        border-radius: 6px;
+        z-index: 2;
+      }
+
+      /* --- BOTTOM SCAN BAR --- */
+      ha-card::after {
+        content: '';
+        position: absolute;
+        bottom: 0; left: 0; right: 0;
+        height: 4px;
+        background: rgb(var(--sonar-color));
+        box-shadow: 0 0 15px rgb(var(--sonar-color));
+        opacity: {{ '1' if is_active else '0.5' }};
+        transition: all 0.5s ease;
+      }
+    mushroom-shape-icon$: |
+      .shape {
+        /* PASS VARIABLES */
+        --shape-color: var(--sonar-color);
+        --icon-size: var(--custom-icon-size) !important;
+        
+        /* GEOMETRY FIXES */
+        width: var(--icon-size) !important;
+        height: var(--icon-size) !important;
+        border-radius: 50% !important;
+        background: transparent !important;
+        
+        /* Positioning */
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: visible !important;
+        
+        /* Static "HUD" Ring */
+        border: 2px solid rgba(var(--shape-color), 0.2);
+        box-shadow: inset 0 0 15px rgba(var(--shape-color), 0.1);
+        transition: border-color 0.3s ease;
+      }
+
+      /* --- ANIMATION: RADAR SWEEP (SCANNING) --- */
+      .shape::before {
+        content: '';
+        display: var(--anim-sweep);
+        position: absolute;
+        inset: -2px; /* Cover the border */
+        border-radius: 50%;
+        background: conic-gradient(
+          from 0deg,
+          transparent 0deg,
+          transparent 270deg,
+          rgba(var(--shape-color), 0.1) 280deg, 
+          rgba(var(--shape-color), 1) 360deg
+        );
+        animation: radar-spin 2.5s linear infinite;
+        z-index: 1;
+      }
+
+      /* --- ANIMATION: SHOCKWAVE (DETECTED) --- */
+      .shape::after {
+        content: '';
+        display: var(--anim-pulse);
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        z-index: 0;
+        animation: sonar-shockwave 2s infinite;
+      }
+
+      /* ICON STYLING */
+      ha-icon {
+        position: relative;
+        z-index: 5;
+        color: rgba(var(--shape-color), 1) !important;
+        filter: drop-shadow(0 0 8px rgba(var(--shape-color), 0.8));
+        transition: color 0.3s ease;
+      }
+
+      /* --- KEYFRAMES --- */
+      @keyframes radar-spin {
+        from { transform: rotate(0deg); }
+        to   { transform: rotate(360deg); }
+      }
+
+      @keyframes sonar-shockwave {
+        0% { box-shadow: 0 0 0 0 rgba(var(--shape-color), 0.8), 0 0 0 0 rgba(var(--shape-color), 0.8); }
+        40% { box-shadow: 0 0 0 20px rgba(var(--shape-color), 0.3), 0 0 0 0 rgba(var(--shape-color), 0.8); }
+        80% { box-shadow: 0 0 0 40px rgba(var(--shape-color), 0), 0 0 0 20px rgba(var(--shape-color), 0); }
+        100% { box-shadow: 0 0 0 0 rgba(var(--shape-color), 0), 0 0 0 0 rgba(var(--shape-color), 0); }
+      }
+
+```
+</details>
+
+<details>
+<summary><strong>72 - MailBox</strong></summary>
+
+```yaml
+type: custom:vertical-stack-in-card
+cards:
+  - type: custom:mushroom-entity-card
+    entity: input_boolean.mail_arrived
+    name: Mailbox
+    icon: mdi:mailbox
+    secondary_info: none
+    tap_action:
+      action: more-info
+    icon_color: orange
+    primary_info: name
+    card_mod:
+      style:
+        .: |
+          ha-card {
+            /* ========================== */
+            /*  USER CONFIG               */
+            /* ========================== */
+            
+            /* 1. Define ACTIVE State */
+            {% set active_state = 'on' %}
+
+            /* 2. icon size */
+            --set-icon-size: 65px;
+
+            /* 3. Custom Badge TEXT? */
+            {% set active_badge_text = 'YOU\'VE GOT MAIL' %}
+            {% set empty_badge_text = 'NO MAIL' %}
+
+            /* 4. Custom color? (RGB) */
+            {% set color_active = '255, 190, 50' %}   /* Orange */
+            {% set color_empty  = '158, 158, 158' %} /* Grey */
+
+            /* ========================== */
+
+            {% set has_mail = states(config.entity) == active_state %}
+            
+            /* 2. Status & Colors */
+            {% if has_mail %}
+               {% set state = 'mail' %}
+               {% set color = color_active %} 
+               {% set badge = active_badge_text %}
+            {% else %}
+               {% set state = 'empty' %}
+               {% set color = color_empty %} 
+               {% set badge = empty_badge_text %}
+            {% endif %}
+            
+            /* CSS VARS */
+            --mb-color: {{ color }};
+            --mb-badge: "{{ badge }}";
+            
+            /* Animation Selectors */
+            --anim-mail-drop: {{ 'block' if state == 'mail' else 'none' }};
+            --icon-move: {{ 'flag-wave 2s ease-in-out infinite' if state == 'mail' else 'none' }};
+            
+            /* --- CORE CARD STYLING --- */
+            background: var(--card-background-color, #1c1c1c);
+            border-radius: var(--ha-card-border-radius, 12px) !important;
+            
+            /* Keeps the bar inside the rounded corners */
+            overflow: hidden; 
+            
+            transition: all 0.5s ease;
+            position: relative;
+          }
+
+
+
+          /* --- BOTTOM HIGHLIGHT BAR --- */
+          ha-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; 
+            left: 0;
+            height: 4px; 
+            width: 100%;
+            
+            /* Dynamic Colors based on State */
+            background: rgb(var(--mb-color));
+            box-shadow: 0 0 15px rgb(var(--mb-color));
+            
+            transition: background 0.5s ease, box-shadow 0.5s ease;
+            opacity: 1; /* Always visible now */
+            z-index: 1;
+          }
+        mushroom-shape-icon$: |
+          .shape {
+            background: rgba(var(--mb-color), 0.15) !important;
+            --icon-size: var(--set-icon-size) !important;
+            position: relative;
+            overflow: hidden; /* Hide the letter before it drops in */
+            transition: background 0.3s ease;
+          }
+
+          /* -------------------------------------- */
+          /* ANIMATION: THE BIG FALLING LETTER      */
+          /* -------------------------------------- */
+          .shape::before {
+            content: '';
+            display: var(--anim-mail-drop);
+            position: absolute;
+            
+            /* --- BIGGER ENVELOPE SIZE --- */
+            width: 28px; height: 18px;
+            
+            /* White Envelope Body */
+            background: #fff;
+            border-radius: 3px;
+            
+            /* Center it horizontally */
+            left: calc(50% - 14px);
+            
+            /* The Envelope Flap (Triangle) details */
+            background-image: linear-gradient(135deg, transparent 50%, #ccc 50%), 
+                              linear-gradient(225deg, transparent 50%, #ccc 50%);
+            background-size: 50% 100%;
+            background-repeat: no-repeat;
+            background-position: 0 0, 100% 0;
+            
+            box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+            
+            /* Run Animation */
+            animation: mail-drop 1.5s ease-in-out infinite;
+          }
+
+          /* -------------------------------------- */
+          /* ANIMATION: ICON MOVEMENT               */
+          /* -------------------------------------- */
+          ha-icon {
+            color: rgb(var(--mb-color)) !important;
+            transition: color 0.3s ease;
+            animation: var(--icon-move);
+            z-index: 2; 
+          }
+
+          /* --- KEYFRAMES --- */
+
+          @keyframes mail-drop {
+            0%   { top: -30px; opacity: 0; transform: rotate(-10deg); }
+            30%  { opacity: 1; transform: rotate(0deg); }
+            60%  { top: 50%; opacity: 1; transform: rotate(5deg); }
+            100% { top: 65%; opacity: 0; transform: rotate(0deg); }
+          }
+
+          @keyframes flag-wave {
+            0%, 100% { transform: rotate(0deg); }
+            25%      { transform: rotate(-10deg); }
+            75%      { transform: rotate(5deg); }
+          }
+  - type: custom:mushroom-chips-card
+    alignment: center
+    chips:
+      - type: template
+        entity: input_boolean.mail_arrived
+        content: |-
+          {% if is_state(entity, 'on') %}
+            ARRIVED AT {{ as_timestamp(states[entity].last_changed) | timestamp_custom('%H:%M') }}
+          {% else %}
+            NO MAIL
+          {% endif %}
+        icon: >-
+          {{ 'mdi:mailbox-up' if is_state(entity, 'on') else
+          'mdi:mailbox-outline' }}
+        icon_color: "{{ 'orange' if is_state(entity, 'on') else 'grey' }}"
+        tap_action:
+          action: call-service
+          service: input_boolean.turn_off
+          target:
+            entity_id: input_boolean.mail_arrived
+        card_mod:
+          style: |
+            ha-card {
+              transition: all 0.3s ease;
+              {% if is_state(config.entity, 'on') %}
+                /* --- MAIL ARRIVED --- */
+                background: rgba(255, 165, 0, 0.15) !important;
+                border: 1px solid rgba(255, 165, 0, 0.5) !important;
+                animation: shake 2s ease-in-out infinite;
+              {% else %}
+                /* --- NO MAIL --- */
+                background: transparent !important;
+                border: 1px solid rgba(158, 158, 158, 0.4) !important;
+              {% endif %}
+            }
+
+            @keyframes shake {
+              0%, 100% { transform: rotate(0deg); }
+              5%       { transform: rotate(5deg); }
+              10%      { transform: rotate(-5deg); }
+              15%      { transform: rotate(5deg); }
+              20%      { transform: rotate(0deg); }
+            }
+    card_mod:
+      style:
+        .: |
+          ha-card {
+              --chip-font-size: 11px;
+              --chip-border-radius: 10px;
+              --chip-height: 30px; 
+              margin: 8px 12px; 
+              position: absolute;
+              top: 15px;
+              right: 5px;
+              }
+
+```
+</details>
+
+<details>
+<summary><strong>73 - Roller shade</strong></summary>
+
+```yaml
+type: custom:mushroom-entity-card
+entity: cover.hall_window
+name: Roller shade
+primary_info: name
+secondary_info: state
+icon: ""
+tap_action:
+  action: more-info
+icon_color: white
+card_mod:
+  style:
+    .: |
+      ha-card {
+        /* ========================== */
+        /* USER CONFIG            */
+        /* ========================== */
+
+        /* Window Colors */
+        {% set color_window_open = '#4fc3f7' %}   /* Light Blue (Day) */
+        {% set color_window_closed = '#263238' %} /* Dark Blue (Night) */
+        
+        /* Roller Colors */
+        {% set color_roller = '#e0e0e0' %}        /* White/Grey Slats */
+        {% set color_roller_shadow = '#bdbdbd' %} /* Shadow between slats */
+        
+        /* Dimensions */
+        {% set window_width = '35%' %}
+        {% set card_height = '100px' %}
+        
+        /* ========================== */
+        
+        /* LOGIC & CALCS              */
+        {% set status = states(config.entity) %}
+        {% set pos = state_attr(config.entity, 'current_position') | int(0) %}
+        {% set closed_pct = 110 - pos %}
+        {% set current_bg = color_window_closed if pos < 10 else color_window_open %}
+        
+        /* Check if moving to trigger animation */
+        {% set is_moving = True if status in ['opening', 'closing'] else False %}
+
+        /* ========================== */
+        /* CSS VARIABLES              */
+        /* ========================== */
+        --c-window-bg: {{ current_bg }};
+        --c-roller: {{ color_roller }};
+        --c-roller-shadow: {{ color_roller_shadow }};
+        --v-roller-height: {{ closed_pct }}%;
+        --v-window-width: {{ window_width }};
+        --v-card-height: {{ card_height }};
+        
+        /* Pass the animation string down to the icon only if moving */
+        --icon-animation: {{ 'roller-pulse 1.5s infinite ease-in-out' if is_moving else 'none' }};
+
+        /* Card Layout */
+        padding-right: calc( {{ window_width }} + 10px ) !important;
+        position: relative;
+        height: var(--v-card-height) !important;
+        transition: height 0.4s;
+      }
+
+      /* ================================== */
+      /* THE WINDOW CAPSULE (Visual)        */
+      /* ================================== */
+      ha-card::after {
+        content: '';
+        position: absolute;
+        top: 12px; bottom: 12px; right: 12px;
+        width: var(--v-window-width);
+        border-radius: 8px;
+        box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
+       
+        background-color: var(--c-window-bg);
+        
+        /* The Roller Slats Drawing */
+        background-image: 
+          linear-gradient(to top, #fff 4px, transparent 4px),
+          repeating-linear-gradient(
+            to bottom,
+            var(--c-roller) 0px,
+            var(--c-roller) 6px,
+            var(--c-roller-shadow) 6px,
+            var(--c-roller-shadow) 7px,
+            transparent 7px,
+            transparent 9px
+          );
+          
+        background-size: 100% var(--v-roller-height);
+        background-repeat: no-repeat;
+        transition: background-size 0.8s cubic-bezier(0.25, 1, 0.5, 1), background-color 1s ease;
+      }
+
+      /* Glass Reflection */
+      ha-card::before {
+        content: '';
+        position: absolute;
+        top: 12px; bottom: 12px; right: 12px;
+        width: var(--v-window-width);
+        border-radius: 8px;
+        background: linear-gradient(120deg, rgba(255,255,255,0.2) 0%, transparent 40%);
+        pointer-events: none;
+        z-index: 2;
+      }
+    mushroom-shape-icon$: |
+      .shape {
+        --icon-size: 60px !important;
+        /* Pulls the animation string from the variable defined in ha-card */
+        animation: var(--icon-animation) !important;
+      }
+
+      /* Define the Keyframes INSIDE the shadow DOM */
+      @keyframes roller-pulse {
+        0% { 
+          transform: scale(0.9); 
+          box-shadow: 0 0 0 0 rgba(var(--rgb-state-cover), 0.7); 
+        }
+        50% { 
+          transform: scale(1); 
+          box-shadow: 0 0 10px 0 rgba(var(--rgb-state-cover), 1); 
+        }
+        100% { 
+          transform: scale(0.9); 
+          box-shadow: 0 0 0 0 rgba(var(--rgb-state-cover), 0.7); 
+        }
+      }
+    mushroom-state-info$: |
+      .container { margin-left: 0 !important; }
+
+```
+</details>
+
+<details>
+<summary><strong>74 - Curtains</strong></summary>
+
+```yaml
+type: custom:mushroom-entity-card
+entity: cover.living_room_window
+name: Curtains
+primary_info: name
+secondary_info: state
+icon: ""
+tap_action:
+  action: more-info
+icon_color: white
+card_mod:
+  style:
+    .: |
+      ha-card {
+        /* ========================== */
+        /* USER CONFIG                */
+        /* ========================== */
+
+        /* Window Colors */
+        {% set color_window_open = '#4fc3f7' %}   /* Light Blue (Day) */
+        {% set color_window_closed = '#263238' %} /* Dark Blue (Night) */
+        
+        /* Curtain Colors */
+        {% set color_curtain = '#e0e0e0' %}        /* Fabric Color */
+        {% set color_curtain_shadow = '#bdbdbd' %} /* Fold Shadows */
+        
+        /* Dimensions */
+        {% set window_width = '40%' %}
+        {% set card_height = '100px' %}
+        
+        /* ========================== */
+        
+        /* LOGIC & CALCS  */
+        {% set status = states(config.entity) %}
+        {% set pos = state_attr(config.entity, 'current_position') | int(0) %}
+        
+        /* Curtain Logic: 
+           If pos is 0 (Closed), each panel is 50% width.
+           If pos is 100 (Open), each panel is 0% width.
+        */
+        {% set panel_width = (100 - pos) / 2 %}
+        
+        /* Background color logic (Day vs Night) */
+        {% set current_bg = color_window_closed if pos < 10 else color_window_open %}
+        
+        /* Check if moving to trigger animation */
+        {% set is_moving = True if status in ['opening', 'closing'] else False %}
+
+        /* ========================== */
+        /* CSS VARIABLES              */
+        /* ========================== */
+        --c-window-bg: {{ current_bg }};
+        --c-curtain: {{ color_curtain }};
+        --c-curtain-shadow: {{ color_curtain_shadow }};
+        
+        /* Dynamic Width for Left and Right Panels */
+        --v-panel-width: {{ panel_width }}%;
+        
+        --v-window-width: {{ window_width }};
+        --v-card-height: {{ card_height }};
+        
+        /* Icon Animation */
+        --icon-animation: {{ 'curtain-pulse 1.5s infinite ease-in-out' if is_moving else 'none' }};
+
+        /* Card Layout */
+        padding-right: calc( {{ window_width }} + 10px ) !important;
+        position: relative;
+        height: var(--v-card-height) !important;
+        transition: height 0.4s;
+      }
+
+      /* ================================== */
+      /* THE WINDOW CAPSULE (Visual)        */
+      /* ================================== */
+      ha-card::after {
+        content: '';
+        position: absolute;
+        top: 12px; bottom: 12px; right: 12px;
+        width: var(--v-window-width);
+        border-radius: 8px;
+        box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
+
+        background-color: var(--c-window-bg);
+        
+        /* THE CURTAINS DRAWING */
+        /* We use two gradients: one anchored left, one anchored right */
+        background-image: 
+          /* Left Curtain Panel */
+          repeating-linear-gradient(90deg, 
+            var(--c-curtain) 0%, 
+            var(--c-curtain) 10%, 
+            var(--c-curtain-shadow) 15%, 
+            var(--c-curtain) 20%),
+            
+          /* Right Curtain Panel */
+          repeating-linear-gradient(-90deg, 
+            var(--c-curtain) 0%, 
+            var(--c-curtain) 10%, 
+            var(--c-curtain-shadow) 15%, 
+            var(--c-curtain) 20%);
+          
+        /* Sizing: Width changes based on entity state, Height is always 100% */
+        background-size: var(--v-panel-width) 100%;
+        
+        /* Positioning: One on the left, One on the right */
+        background-position: left top, right top;
+        
+        background-repeat: no-repeat;
+        transition: background-size 0.8s cubic-bezier(0.25, 1, 0.5, 1), background-color 1s ease;
+      }
+
+      /* Glass Reflection */
+      ha-card::before {
+        content: '';
+        position: absolute;
+        top: 12px; bottom: 12px; right: 12px;
+        width: var(--v-window-width);
+        border-radius: 8px;
+        background: linear-gradient(120deg, rgba(255,255,255,0.2) 0%, transparent 40%);
+        pointer-events: none;
+        z-index: 2;
+      }
+    mushroom-shape-icon$: |
+      .shape {
+        --icon-size: 60px !important;
+        animation: var(--icon-animation) !important;
+      }
+
+      @keyframes curtain-pulse {
+        0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(var(--rgb-state-cover), 0.7); }
+        50% { transform: scale(1); box-shadow: 0 0 10px 0 rgba(var(--rgb-state-cover), 1); }
+        100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(var(--rgb-state-cover), 0.7); }
+      }
+    mushroom-state-info$: |
+      .container { margin-left: 0 !important; }
+
+```
+</details>
+
+<details>
+<summary><strong>75 - Solar Panel</strong></summary>
+
+```yaml
+type: custom:mushroom-entity-card
+entity: sensor.solar_panel_power
+name: Solar Panel
+icon: mdi:solar-power-variant
+primary_info: name
+secondary_info: none
+tap_action:
+  action: more-info
+layout: horizontal
+card_mod:
+  style:
+    .: |
+      ha-card {
+        /* ================================ */
+        /* USER CONFIG                      */
+        /* ================================ */
+        
+        /* --- MAIN SETTINGS --- */
+        {% set max_watts = 1200 %}           {# The maximum W your device supports #}
+        {% set show_ma = false %}            {# Set to true for mA, false for A #}
+        {% set custom_msg = "MAX: 1200W" %}  {# Text shown bottom right #}
+
+        
+        {% set theme_mode = 'dark' %}        {# 'dark' or 'light' #}
+        {% set card_height = '90px' %}       {# card Height#}
+        
+
+        /* --- SENSORS --- */
+        {% set sensor_power =   'sensor.solar_panel_power' %}
+        {% set sensor_voltage = 'sensor.solar_panel_voltage' %}
+        {% set sensor_current = 'sensor.solar_panel_current' %}
+
+        /* Colors (icon, ambient , Bar) */
+        {% set color_solar = '255, 193, 7' %}   {# Icon Color #}
+        {% set color_bar   = '255, 193, 7' %}   {# Progress Bar & Ambient #}
+
+        /* Colors (Badges W, A, V) */
+        {% set color_watts = '255, 152, 0'  %}  {# Orange #}
+        {% set color_amps  = '33, 150, 243' %}  {# Blue #}
+        {% set color_volts = '76, 175, 80'  %}  {# Green #}
+
+        /* --- FONT SIZES --- */
+        {% set fs_main   = '14px' %} {# Primary Info    #}
+        {% set fs_sec    = '11px' %} {# Secondary Info  #}
+        {% set fs_badges = '11px' %} {# Size W, A, V    #}
+        {% set fs_custom = '11px' %} {# Size custom msg #}
+
+        /* ============================= */
+
+        /* Background Logic */
+        {% if theme_mode == 'dark' %}
+           {% set card_bg_color = '28, 28, 28' %}
+           {% set color_text_main = '255, 255, 255' %} 
+           {% set color_text_sec  = '255, 255, 255' %}
+           {% set color_text_msg  = '255, 255, 255' %}
+        {% else %}
+           {% set card_bg_color = '255, 255, 255' %}
+           {% set color_text_main = '33, 33, 33' %} 
+           {% set color_text_sec  = '114, 114, 114' %} 
+           {% set color_text_msg  = '33, 33, 33' %}
+        {% endif %}
+        
+        /* --- SENSOR LOGIC --- */
+        {% set watts = states(sensor_power) | float(0) | int %}
+        {% set volts = states(sensor_voltage) | float(0) | int %}
+        {% set amps  = states(sensor_current) | float(0) %}
+
+        /* --- mA vs A LOGIC --- */
+        {% if show_ma %}
+            {% set str_amps = amps | int ~ " mA" %}
+        {% else %}
+            {% set str_amps = amps | round(2) ~ " A" %}
+        {% endif %}
+
+        /* --- ANIMATION LOGIC --- */
+        /* Bar Percentage */
+        {% set pct = (watts / max_watts * 100) | int %}
+        {% set pct = 100 if pct > 100 else pct %}
+        
+        /* Glow Intensity (Scales with load, max glow at max load) */
+        {% set glow_radius = (watts / max_watts * 30 + 10) if watts > 0 else 0 %}
+        
+        /* Animation ON/OFF (Active if watts > 0) */
+        {% set anim_state = 1 if watts > 0 else 0 %}
+        
+        /* Strings */
+        {% set str_watts = watts ~ " W" %}
+        {% set str_volts = volts ~ " V" %}
+
+        /* --- CSS VARIABLES --- */
+        --c-solar: {{ color_solar }};
+        --c-watts: {{ color_watts }};
+        --c-amps:  {{ color_amps }};
+        --c-volts: {{ color_volts }};
+        --c-bar:   {{ color_bar }};
+
+        --c-txt-m: {{ color_text_main }};
+        --c-txt-s: {{ color_text_sec }};
+        --c-txt-c: {{ color_text_msg }};
+        
+        --v-watts: "{{ str_watts }}";
+        --v-volts: "{{ str_volts }}";
+        --v-amps:  "{{ str_amps }}";   
+        --v-custom: "{{ custom_msg }}";
+
+        /* --- FONT SIZE VARIABLES --- */
+        --fs-main:   {{ fs_main }};
+        --fs-sec:    {{ fs_sec }};
+        --fs-badges: {{ fs_badges }};
+        --fs-custom: {{ fs_custom }};
+        
+        --anim-glow: {{ glow_radius }}px;
+        --anim-state: {{ anim_state }};
+        --bar-width: {{ pct }}%;
+        --card-h: {{ card_height }};
+        --card-b: {{ card_bg_color }};
+
+        /* Internal Card Glow */
+        --card-in-glow: {{ 'inset 0 0 60px rgba(' ~ color_bar ~ ', 0.1)' if watts > 0 else 'none' }};
+
+        /* Badge Positioning */
+        --badge-bg-opacity: 0.15;
+        --badge-width: 58px;
+        --badge-height: 20px;
+        --badge-gap: 6px;
+        --pos-1: 12px;
+        --pos-2: calc(12px + var(--badge-width) + var(--badge-gap));
+        --pos-3: calc(12px + (var(--badge-width) * 2) + (var(--badge-gap) * 2));
+
+        /* Card Styling */
+        background: rgb(var(--card-b)) !important;
+        height: var(--card-h) !important;
+        box-shadow: var(--card-in-glow);
+        overflow: hidden !important; 
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      /*  BADGES (Top Right) */
+      ha-card::after {
+        content: var(--v-watts);
+        background: color-mix(in srgb, rgb(var(--c-watts)), transparent calc(100% - (var(--badge-bg-opacity) * 100)));
+        border: 1px solid rgb(var(--c-watts));
+        color: rgb(var(--c-watts));
+        box-shadow: 0 0 6px 0 color-mix(in srgb, rgb(var(--c-watts)), transparent 70%);
+        position: absolute; top: 12px; right: var(--pos-1);
+        width: var(--badge-width); height: var(--badge-height);
+        display: flex; align-items: center; justify-content: center;
+        font-size: var(--fs-badges); /* UPDATED */
+        font-weight: 700; border-radius: 4px; z-index: 5;
+      }
+
+      ha-card::before {
+        content: var(--v-amps);
+        background: color-mix(in srgb, rgb(var(--c-amps)), transparent calc(100% - (var(--badge-bg-opacity) * 100)));
+        border: 1px solid rgb(var(--c-amps));
+        color: rgb(var(--c-amps));
+        box-shadow: 0 0 6px 0 color-mix(in srgb, rgb(var(--c-amps)), transparent 70%);
+        position: absolute; top: 12px; right: var(--pos-2);
+        width: var(--badge-width); height: var(--badge-height);
+        display: flex; align-items: center; justify-content: center;
+        font-size: var(--fs-badges); /* UPDATED */
+        font-weight: 700; border-radius: 4px; z-index: 5;
+      }
+    mushroom-shape-icon$: |
+      .shape {
+        --icon-size: 65px !important;
+        --shape-color: rgba(var(--c-solar), 0.2) !important;
+        --icon-color: rgb(var(--c-solar)) !important;
+        background: radial-gradient(circle, rgba(var(--c-solar), 0.1) 0%, transparent 70%) !important;
+        box-shadow: 0 0 var(--anim-glow) rgba(var(--c-solar), 0.6);
+        overflow: visible !important;
+      }
+      .shape::before {
+        content: ""; position: absolute; inset: -4px; border-radius: 50%;
+        background: conic-gradient(from -25deg, transparent 0%, rgba(var(--c-solar), 0.8) 25%, transparent 50%);
+        animation: scan 4s ease-in-out infinite;
+        filter: blur(4px); z-index: 0;
+        opacity: var(--anim-state);
+      }
+      .shape::after {
+        content: ""; position: absolute; inset: 0; border-radius: 50%;
+        background: radial-gradient(circle, rgba(var(--c-solar), 0.8) 0%, transparent 60%);
+        animation: pulse 3s ease-in-out infinite;
+        opacity: 0.6; z-index: -1;
+      }
+      @keyframes scan { 
+        0% { transform: rotate(-90deg); } 
+        50% { transform: rotate(-30deg); } 
+        100% { transform: rotate(-90deg); } 
+      } 
+      @keyframes pulse {
+        0%, 100% { transform: scale(0.9); opacity: 0.5; } 
+        50% { transform: scale(1.1); opacity: 0.8; } 
+      }
+      ha-icon {
+        z-index: 1;
+        filter: drop-shadow(0 0 5px rgba(var(--c-solar), 0.8));
+      }
+    mushroom-state-item$: |
+      .container::before {
+        /* PROGRESS BAR */
+        content: '';
+        position: absolute; 
+        bottom: 0px; left: 0; 
+        width: var(--bar-width);
+        height: 4px; /* Slightly thicker to sit flush */
+        background: rgb(var(--c-bar));
+        box-shadow: 0 -1px 8px rgba(var(--c-bar), 0.5);
+        border-bottom-left-radius: var(--ha-card-border-radius, 12px);
+        border-bottom-right-radius: 0; 
+        transition: width 0.5s ease; z-index: 2;
+      }
+      .container::after {
+        /* VOLTS BADGE */
+        content: var(--v-volts);
+        background: color-mix(in srgb, rgb(var(--c-volts)), transparent calc(100% - (var(--badge-bg-opacity) * 100)));
+        border: 1px solid rgb(var(--c-volts));
+        color: rgb(var(--c-volts));
+        box-shadow: 0 0 6px 0 color-mix(in srgb, rgb(var(--c-volts)), transparent 70%);
+        position: absolute; top: 12px; right: var(--pos-3);
+        width: var(--badge-width); height: var(--badge-height);
+        display: flex; align-items: center; justify-content: center;
+        font-size: var(--fs-badges); /* UPDATED */
+        font-weight: 700; border-radius: 4px; z-index: 5;
+      }
+    mushroom-state-info$: |
+      /* MAIN NAME SIZE */
+      .primary {
+        font-size: var(--fs-main) !important;
+        color: rgb(var(--c-txt-m)) !important;
+      }
+      .secondary {
+        font-size: var(--fs-sec) !important;
+        color: rgb(var(--c-txt-s)) !important;
+      }
+      .container::after {
+        /* CUSTOM msg */
+        content: var(--v-custom);
+        position: absolute; bottom: 8px; right: 12px; 
+        width: 200px; text-align: right;
+        font-size: var(--fs-custom);
+        font-weight: 600; 
+        color: rgba(var(--c-txt-c), 0.4); 
+        letter-spacing: 1px; z-index: 6;
+      }
+
+```
+</details>
+
+
+
+<details>
+<summary><strong>76 - Plug</strong></summary>
+
+```yaml
+type: custom:mushroom-entity-card
+entity: switch.smart_plug
+name: Smart Plug
+icon: mdi:power-socket-eu
+primary_info: name
+secondary_info: none
+tap_action:
+  action: more-info
+layout: horizontal
+card_mod:
+  style:
+    .: |
+      ha-card {
+        /* ================================ */
+        /* USER CONFIG                      */
+        /* ================================ */
+        
+        /* --- MAIN SETTINGS --- */
+        {% set max_watts = 2500 %}           {# The maximum W your device supports #}
+        {% set show_ma = false %}            {# Set to true for mA, false for A #}
+        {% set custom_msg = "MAX: 2500W" %}  {# Text shown bottom right #}
+
+        {% set theme_mode = 'dark' %}        {# 'dark' or 'light' #}
+        {% set card_height = '100px' %}      {# card Height #}
+        
+        /* --- SENSORS --- */
+        {% set sensor_power =   'sensor.smart_plug_power' %}
+        {% set sensor_voltage = 'sensor.smart_plug_voltage' %}
+        {% set sensor_current = 'sensor.smart_plug_current' %}
+
+        /* --- COLORS (RGB Triplets) --- */
+        /* Electric Green for Power/Plug */
+        {% set color_plug = '76, 175, 80' %} 
+        {% set color_bar  = '76, 175, 80' %} 
+
+        /* Colors (Badges W, A, V) - Converted from Hex to RGB */
+        {% set color_watts = '255, 152, 0' %}   {# Orange #}
+        {% set color_amps  = '33, 150, 243' %}  {# Blue #}
+        {% set color_volts = '76, 175, 80' %}   {# Green #}
+
+        /* --- FONT SIZES --- */
+        {% set fs_icon   = '65px' %} 
+        {% set fs_main   = '14px' %} 
+        {% set fs_sec    = '11px' %} 
+        {% set fs_badges = '11px' %} 
+        {% set fs_custom = '11px' %} 
+
+        /* ============================= */
+
+        /* Background Logic (From Card 1) */
+        {% if theme_mode == 'dark' %}
+           {% set card_bg_color = '28, 28, 28' %}
+           {% set color_text_main = '255, 255, 255' %} 
+           {% set color_text_sec  = '255, 255, 255' %}
+           {% set color_text_msg  = '255, 255, 255' %}
+        {% else %}
+           {% set card_bg_color = '255, 255, 255' %}
+           {% set color_text_main = '33, 33, 33' %} 
+           {% set color_text_sec  = '114, 114, 114' %} 
+           {% set color_text_msg  = '33, 33, 33' %}
+        {% endif %}
+
+        /* --- SENSOR LOGIC --- */
+        {% set watts = states(sensor_power) | float(0) | int %}
+        {% set volts = states(sensor_voltage) | float(0) | int %}
+        {% set amps  = states(sensor_current) | float(0) %}
+
+        /* --- mA vs A LOGIC --- */
+        {% if show_ma %}
+            {% set str_amps = amps | int ~ " mA" %}
+        {% else %}
+            {% set str_amps = amps | round(2) ~ " A" %}
+        {% endif %}
+
+        /* --- ANIMATION LOGIC --- */
+        {% set pct = (watts / max_watts * 100) | int %}
+        {% set pct = 100 if pct > 100 else pct %}
+        
+        /* Calculate Speed based on Load (Unique to Plug) */
+        {% set dur = 2.0 - (watts / max_watts * 1.5) %}
+        {% set dur = 0.4 if dur < 0.4 else dur %}
+
+        /* Define Animation Strings (Active only if Watts > 0) */
+        {% if watts > 0 %}
+            {% set anim_shake = 'ultra-plug-on ' ~ dur ~ 's ease-in-out infinite' %}
+            {% set anim_glow  = 'ultra-plug-glow 1.8s ease-in-out infinite' %}
+            {% set anim_arcs  = 'ultra-plug-arcs 1.2s linear infinite' %}
+            {% set glow_bg    = 'inset 0 0 60px rgba(' ~ color_bar ~ ', 0.1)' %}
+        {% else %}
+            {% set anim_shake = 'none' %}
+            {% set anim_glow  = 'none' %}
+            {% set anim_arcs  = 'none' %}
+            {% set glow_bg    = 'none' %}
+        {% endif %}
+
+        /* Strings */
+        {% set str_watts = watts ~ " W" %}
+        {% set str_volts = volts ~ " V" %}
+
+        /* --- CSS VARIABLES --- */
+        --c-plug:  {{ color_plug }};
+        --c-watts: {{ color_watts }};
+        --c-amps:  {{ color_amps }};
+        --c-volts: {{ color_volts }};
+        --c-bar:   {{ color_bar }};
+        
+        --c-txt-m: {{ color_text_main }};
+        --c-txt-s: {{ color_text_sec }};
+        --c-txt-c: {{ color_text_msg }};
+
+        --v-watts: "{{ str_watts }}";
+        --v-volts: "{{ str_volts }}";
+        --v-amps:  "{{ str_amps }}";    
+        --v-custom: "{{ custom_msg }}";
+
+        /* --- PASS ANIMATIONS DOWN --- */
+        --anim-shake: {{ anim_shake }};
+        --anim-glow:  {{ anim_glow }};
+        --anim-arcs:  {{ anim_arcs }};
+
+        /* --- FONT SIZE VARIABLES --- */
+        --fs-main:   {{ fs_main }};
+        --fs-sec:    {{ fs_sec }};
+        --fs-badges: {{ fs_badges }};
+        --fs-custom: {{ fs_custom }};
+        --fs-icon:   {{ fs_icon }};
+        
+        --bar-width: {{ pct }}%;
+        --card-h: {{ card_height }};
+        --card-b: {{ card_bg_color }};
+        --card-in-glow: {{ glow_bg }};
+
+        /* Badge Positioning */
+        --badge-bg-opacity: 0.15;
+        --badge-width: 58px;
+        --badge-height: 20px;
+        --badge-gap: 6px;
+        --pos-1: 12px;
+        --pos-2: calc(12px + var(--badge-width) + var(--badge-gap));
+        --pos-3: calc(12px + (var(--badge-width) * 2) + (var(--badge-gap) * 2));
+        
+        /* Card Styling */
+        background: rgb(var(--card-b)) !important;
+        height: var(--card-h) !important;
+        box-shadow: var(--card-in-glow);
+        overflow: hidden !important; 
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      /* BADGES (Top Right) */
+      ha-card::after {
+        content: var(--v-watts);
+        background: color-mix(in srgb, rgb(var(--c-watts)), transparent calc(100% - (var(--badge-bg-opacity) * 100)));
+        border: 1px solid rgb(var(--c-watts));
+        color: rgb(var(--c-watts));
+        box-shadow: 0 0 6px 0 color-mix(in srgb, rgb(var(--c-watts)), transparent 70%);
+        position: absolute; top: 12px; right: var(--pos-1);
+        width: var(--badge-width); height: var(--badge-height);
+        display: flex; align-items: center; justify-content: center;
+        font-size: var(--fs-badges);
+        font-weight: 700; border-radius: 4px; z-index: 5;
+      }
+
+      ha-card::before {
+        content: var(--v-amps);
+        background: color-mix(in srgb, rgb(var(--c-amps)), transparent calc(100% - (var(--badge-bg-opacity) * 100)));
+        border: 1px solid rgb(var(--c-amps));
+        color: rgb(var(--c-amps));
+        box-shadow: 0 0 6px 0 color-mix(in srgb, rgb(var(--c-amps)), transparent 70%);
+        position: absolute; top: 12px; right: var(--pos-2);
+        width: var(--badge-width); height: var(--badge-height);
+        display: flex; align-items: center; justify-content: center;
+        font-size: var(--fs-badges);
+        font-weight: 700; border-radius: 4px; z-index: 5;
+      }
+    mushroom-shape-icon$: |
+      .shape {
+        --icon-size: var(--fs-icon) !important;
+        --shape-color: rgba(var(--c-plug), 0.2) !important;
+        --icon-color: rgb(var(--c-plug)) !important;
+        background: radial-gradient(circle, rgba(var(--c-plug), 0.1) 0%, transparent 70%) !important;
+        overflow: visible !important;
+        transform-origin: 50% 50%;
+        
+        /* Consume Variables from Top */
+        animation: var(--anim-shake);
+      }
+
+      .shape::before,
+      .shape::after {
+        content: '';
+        position: absolute; inset: -4px; border-radius: 50%;
+        pointer-events: none;
+      }
+
+      .shape::before {
+        /* Glow Animation */
+        animation: var(--anim-glow);
+        z-index: 0;
+      }
+
+      .shape::after {
+        /* Arcs Animation */
+        animation: var(--anim-arcs);
+        z-index: 1;
+      }
+
+      /* --- KEYFRAMES (Using RGB vars) --- */
+      @keyframes ultra-plug-on {
+        0%   { transform: scale(1); }
+        25%  { transform: scale(1.05) translateY(-1px); }
+        50%  { transform: scale(1.08) translateY(-2px); }
+        75%  { transform: scale(1.04) translateY(-1px); }
+        100% { transform: scale(1); }
+      }
+
+      @keyframes ultra-plug-glow {
+        0% {
+          box-shadow: 0 0 10px 3px rgba(var(--c-plug), 0.6), 0 0 20px 8px rgba(var(--c-plug), 0.3);
+        }
+        50% {
+          box-shadow: 0 0 18px 6px rgba(var(--c-plug), 0.9), 0 0 32px 12px rgba(var(--c-plug), 0.4);
+        }
+        100% {
+          box-shadow: 0 0 10px 3px rgba(var(--c-plug), 0.6), 0 0 20px 8px rgba(var(--c-plug), 0.3);
+        }
+      }
+
+      @keyframes ultra-plug-arcs {
+        0% {
+          box-shadow: -10px -6px 0 -4px rgba(var(--c-plug), 0.0), 12px 4px 0 -4px rgba(var(--c-plug), 0.0);
+        }
+        25% {
+          box-shadow: -10px -6px 0 -4px rgba(var(--c-plug), 0.7), 12px 4px 0 -4px rgba(var(--c-plug), 0.4);
+        }
+        50% {
+          box-shadow: -6px 2px 0 -4px rgba(var(--c-plug), 0.3), 10px -8px 0 -4px rgba(var(--c-plug), 0.7);
+        }
+        75% {
+          box-shadow: -12px 4px 0 -4px rgba(var(--c-plug), 0.5), 8px 0 0 -4px rgba(var(--c-plug), 0.2);
+        }
+        100% {
+          box-shadow: -10px -6px 0 -4px rgba(var(--c-plug), 0.0), 12px 4px 0 -4px rgba(var(--c-plug), 0.0);
+        }
+      }
+
+      ha-icon {
+        z-index: 2;
+        filter: drop-shadow(0 0 5px rgba(var(--c-plug), 0.8));
+      }
+    mushroom-state-item$: |
+      .container::before {
+        /* PROGRESS BAR */
+        content: '';
+        position: absolute; 
+        bottom: 0px; left: 0; 
+        width: var(--bar-width);
+        height: 4px;
+        background: rgb(var(--c-bar));
+        box-shadow: 0 -1px 8px rgba(var(--c-bar), 0.5);
+        border-bottom-left-radius: var(--ha-card-border-radius, 12px);
+        border-bottom-right-radius: 0; 
+        transition: width 0.5s ease; z-index: 2;
+      }
+      .container::after {
+        /* VOLTS BADGE */
+        content: var(--v-volts);
+        background: color-mix(in srgb, rgb(var(--c-volts)), transparent calc(100% - (var(--badge-bg-opacity) * 100)));
+        border: 1px solid rgb(var(--c-volts));
+        color: rgb(var(--c-volts));
+        box-shadow: 0 0 6px 0 color-mix(in srgb, rgb(var(--c-volts)), transparent 70%);
+        position: absolute; top: 12px; right: var(--pos-3);
+        width: var(--badge-width); height: var(--badge-height);
+        display: flex; align-items: center; justify-content: center;
+        font-size: var(--fs-badges);
+        font-weight: 700; border-radius: 4px; z-index: 5;
+      }
+    mushroom-state-info$: |
+      /* MAIN NAME SIZE & COLOR */
+      .primary {
+        font-size: var(--fs-main) !important;
+        color: rgb(var(--c-txt-m)) !important;
+      }
+      .secondary {
+        font-size: var(--fs-sec) !important;
+        color: rgb(var(--c-txt-s)) !important;
+      }
+      .container::after {
+        /* CUSTOM msg */
+        content: var(--v-custom);
+        position: absolute; bottom: 8px; right: 12px; 
+        width: 200px; text-align: right;
+        font-size: var(--fs-custom);
+        font-weight: 600; 
+        color: rgba(var(--c-txt-c), 0.4); 
+        letter-spacing: 1px; z-index: 6;
+      }
+
+```
+</details>
+-->
 
 ---
 
