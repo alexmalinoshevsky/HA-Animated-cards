@@ -23,6 +23,8 @@
 
 # 🏠 Home Assistant Animated Badges and Buttons Maker
 
+> For step-by-step instructions, watch my [YouTube Video](https://youtube.com) here.
+
 <img width="1305" height="530" alt="555616448-8c75d3fa-dfcf-4c36-ac74-f578395d5660" src="https://github.com/user-attachments/assets/ee5965ba-53bf-4037-a379-a09fa6766a6d" />
 
 
