@@ -23,7 +23,8 @@
 
 # 🏠 Home Assistant Animated Badges and Buttons Maker
 
-<img width="1305" height="530" alt="Screenshot 2026-02-26 214024" src="https://github.com/user-attachments/assets/8c75d3fa-dfcf-4c36-ac74-f578395d5660" />
+<img width="1305" height="530" alt="555616448-8c75d3fa-dfcf-4c36-ac74-f578395d5660" src="https://github.com/user-attachments/assets/ee5965ba-53bf-4037-a379-a09fa6766a6d" />
+
 
 ## $${\color{yellow}For \space Normal \space Entities}$$
 
