@@ -1257,6 +1257,8 @@ cards:
 ```
 </details>
 
+<hr>
+
 <img width="505" height="118" alt="Screenshot 2026-02-27 155901" src="https://github.com/user-attachments/assets/18a6cacc-073c-46f5-bd2d-39b37ed3c0e0" />
 
 <details>
@@ -2327,6 +2329,8 @@ cards:
 ```
 </details>
 
+<hr>
+
 <img width="503" height="103" alt="Screenshot 2026-02-27 155908" src="https://github.com/user-attachments/assets/a9e38b6f-a5f2-4d61-a360-97ff514d790c" />
 
 <details>
@@ -2731,6 +2735,8 @@ cards:
 
 ```
 </details>
+
+<hr>
 
 <img width="501" height="126" alt="Screenshot 2026-02-27 155913" src="https://github.com/user-attachments/assets/1f910e41-10de-42dc-8629-7e69387f1aa2" />
 
@@ -3363,6 +3369,8 @@ cards:
 ```
 </details>
 
+<hr>
+
 <img width="501" height="100" alt="Screenshot 2026-02-27 155956" src="https://github.com/user-attachments/assets/9bd8e4b4-72ca-4e6a-8ff5-46b2c7cbbe5b" />
 
 <details>
@@ -3726,6 +3734,8 @@ cards:
 
 ```
 </details>
+
+<hr>
 
 [paypal_me_shield]: https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white
 
