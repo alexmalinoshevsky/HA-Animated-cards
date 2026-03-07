@@ -20,10 +20,10 @@
 | 📂 Category | 📝 Description | 🔗 Link |
 | :--- | :--- | :---: |
 | **🏠Home** | main collection| [**You are here**](./) |
-| **🧺 Appliances** | washer, dryer, dishwasher, etc | [**View Page**](./appliances.md) |
-| **🔋 Battery** | Battery level, charging animations | [**View Page**](./battery.md) |
-| **📈 Graph Cards** | Temp, humidity, etc | [**View Page**](./env_with_graph.md) |
-| **📟 Badge/Button** | Make custom Badge/Button  | [**View Page**](./badge_maker.md) |
+| **🧺 Appliances** | washer, dryer, dishwasher, etc | [**View**](./appliances.md) |
+| **🔋 Battery** | Battery level, charging animations | [**View**](./battery.md) |
+| **📈 Graph Cards** | Temp, humidity, etc | [**View**](./env_with_graph.md) |
+| **📟 Badge/Button** | Make custom Badge/Button  | [**View**](./badge_maker.md) |
 
 ---
 
