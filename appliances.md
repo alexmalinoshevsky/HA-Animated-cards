@@ -23,6 +23,12 @@
 
 # Home Assistant Animated Appliances Cards
 
+<div align="left">
+<a href="https://github.com/Anashost/HA-Animated-cards/blob/main/appliances_v2.md">
+  <img src="https://img.shields.io/badge/Cards_Updated_Click_Here_➤-FF0000?style=for-the-badge&logoColor=white" height="60" />
+</a>
+</div>
+
 >* Dishwasher
 >
 >* Washing Machine
