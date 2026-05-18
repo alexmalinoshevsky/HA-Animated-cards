@@ -35,6 +35,7 @@
 | :--- | :--- | :---: |
 | **🏠Home** | main collection| [**You are here**](./) |
 | **🧺 Appliances** | washer, dryer, dishwasher, etc | [**View**](./appliances.md) |
+| **🧺 Appliances v2** | washer, dryer, dishwasher, etc | [**View**](./appliances_v2.md) |
 | **🔋 Battery** | Battery level, charging animations | [**View**](./battery.md) |
 | **📈 Graph Cards** | Temp, humidity, etc | [**View**](./env_with_graph.md) |
 | **📟 Badge/Button** | Make custom Badge/Button  | [**View**](./badge_maker.md) |
