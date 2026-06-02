@@ -23,6 +23,7 @@
 
 # Home Assistant Animated Environment cards with graph.
 
+This [YouTube Video](https://youtu.be/avAg9CR9TRc) explains how to do it.
 
 ## Preview
 
