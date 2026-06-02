@@ -391,7 +391,7 @@ cards:
               position: absolute;
               bottom: -10px;
               right: -10px;
-              }
+              }ha-card::before, ha-card::after { display: none !important; }
 
 ```
 </details>
@@ -680,7 +680,7 @@ cards:
               position: absolute;
               bottom: -10px;
               right: -10px;
-              }
+              }ha-card::before, ha-card::after { display: none !important; }
 
 ```
 </details>
@@ -1132,7 +1132,7 @@ cards:
               position: absolute;
               bottom: -10px;
               right: -10px;
-              }
+              }ha-card::before, ha-card::after { display: none !important; }
 
 ```
 </details>
@@ -1480,7 +1480,7 @@ cards:
               position: absolute;
               bottom: -10px;
               right: -10px;
-              }
+              }ha-card::before, ha-card::after { display: none !important; }
 
 ```
 </details>
@@ -1825,7 +1825,7 @@ cards:
               position: absolute;
               bottom: -10px;
               right: -10px;
-              }
+              }ha-card::before, ha-card::after { display: none !important; }
 
 ```
 </details>
@@ -2289,7 +2289,7 @@ cards:
               position: absolute;
               bottom: -10px;
               right: -10px;
-              }
+              }ha-card::before, ha-card::after { display: none !important; }
 
 ```
 </details>
@@ -2752,7 +2752,7 @@ cards:
               position: absolute;
               bottom: -10px;
               right: -10px;
-              }
+              }ha-card::before, ha-card::after { display: none !important; }
 
 ```
 </details>
@@ -3103,7 +3103,7 @@ cards:
               position: absolute;
               bottom: -10px;
               right: -10px;
-              }
+              }ha-card::before, ha-card::after { display: none !important; }
 
 ```
 </details>
@@ -3455,7 +3455,7 @@ cards:
               position: absolute;
               bottom: -10px;
               right: -10px;
-              }
+              }ha-card::before, ha-card::after { display: none !important; }
 
 ```
 </details>
@@ -3760,7 +3760,7 @@ cards:
               position: absolute;
               bottom: -10px;
               right: -10px;
-              }
+              }ha-card::before, ha-card::after { display: none !important; }
 
 ```
 </details>
