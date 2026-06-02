@@ -699,7 +699,7 @@ card_mod:
       --icon-size: 68px;
       --shape-color: rgba({{ rgb1 }}, 0.2) !important;
       display: flex;
-      margin: -18px 0 10px -18px !important;
+      # margin: -18px 0 10px -18px !important;
       padding-right: 10px;
       position: relative;
       z-index: 3 !important;
@@ -839,7 +839,7 @@ card_mod:
       --icon-size: 68px;
       --shape-color: rgba({{ rgb1 }}, 0.2) !important;
       display: flex;
-      margin: -18px 0 10px -18px !important;
+      # margin: -18px 0 10px -18px !important;
       padding-right: 10px;
       z-index: 2;
     }
