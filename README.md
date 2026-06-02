@@ -5474,6 +5474,141 @@ card_mod:
 </details>
 
 <details>
+<summary><strong>39 - Freezer / Refrigerator (frosted glass)</strong></summary>
+
+```yaml
+type: custom:mushroom-entity-card
+entity: switch.plug_6_local
+tap_action:
+  action: toggle
+icon: mdi:fridge-industrial
+icon_color: white
+name: Freezer / Refrigerator
+card_mod:
+  style:
+    .: |
+      ha-card {
+        /* ================= USER CONFIGURATION ================= */
+        
+        {% set use_number      = false %}
+        {% set state_entity    = 'switch.plug_6_local' %}
+        {% set active_value    = 'on' %}
+        {% set number_entity   = 'sensor.plug_power' %}
+
+        {% set number_operator = '>' %}
+        {% set threshold       = 0.0 %}
+        
+        /* ====================================================== */
+
+        {% if use_number %}
+          {% set num = states(number_entity) | float(0) %}
+          {% if number_operator == '>' %} {% set active = (num > threshold) %}
+          {% elif number_operator == '<' %} {% set active = (num < threshold) %}
+          {% elif number_operator == '=' %} {% set active = (num == threshold) %}
+          {% elif number_operator == '>=' %} {% set active = (num >= threshold) %}
+          {% elif number_operator == '<=' %} {% set active = (num <= threshold) %}
+          {% else %} {% set active = false %} {% endif %}
+        {% else %}
+          {% set active = states(state_entity) == active_value %}
+        {% endif %}
+
+        --card-bg: var(--ha-card-background, var(--card-background-color, transparent));
+        --card-shadow: {{ 'inset 0 0 30px rgba(200, 255, 255, 0.6)' if active else 'var(--ha-card-box-shadow, none)' }};
+        --snow-display: {{ 'block' if active else 'none' }};
+        --primary-text-color: {{ '#e0f7fa' if active else 'var(--primary-text-color)' }};
+        --secondary-text-color: {{ '#b2ebf2' if active else 'var(--secondary-text-color)' }};
+        --custom-icon-anim: {{ 'compressor-rumble 0.2s linear infinite' if active else 'none' }};
+        --custom-icon-shadow: {{ '0 0 25px 5px rgba(255, 255, 255, 0.6)' if active else 'none' }};
+
+        background: transparent !important;
+        box-shadow: var(--card-shadow) !important;
+        border-radius: var(--ha-card-border-radius, 12px);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.5s ease;
+        isolation: isolate;
+      }
+
+      ha-card::before {
+        content: '';
+        display: var(--snow-display);
+        position: absolute;
+        inset: 0;
+        background-image: 
+          radial-gradient(circle at 20px 30px, white 2px, transparent 3px),
+          radial-gradient(circle at 50px 160px, white 2px, transparent 3px),
+          radial-gradient(circle at 90px 40px, white 2px, transparent 3px),
+          radial-gradient(circle at 130px 80px, white 2px, transparent 3px),
+          radial-gradient(circle at 160px 120px, white 2px, transparent 3px),
+          radial-gradient(circle at 240px 300px, white 2px, transparent 3px),
+          radial-gradient(circle at 280px 100px, white 2px, transparent 3px);
+        background-size: 300px 400px; 
+        background-repeat: repeat;
+        animation: snow-fall-layer1 10s linear infinite;
+        opacity: 0.9;
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      ha-card::after {
+        content: '';
+        display: var(--snow-display);
+        position: absolute;
+        inset: 0;
+        background-image: 
+          radial-gradient(circle at 10px 10px, rgba(255,255,255,0.7) 1px, transparent 2px),
+          radial-gradient(circle at 30px 90px, rgba(255,255,255,0.7) 1px, transparent 2px),
+          radial-gradient(circle at 80px 50px, rgba(255,255,255,0.7) 1px, transparent 2px),
+          radial-gradient(circle at 110px 190px, rgba(255,255,255,0.7) 1px, transparent 2px),
+          radial-gradient(circle at 150px 100px, rgba(255,255,255,0.7) 1px, transparent 2px),
+          radial-gradient(circle at 220px 250px, rgba(255,255,255,0.7) 1px, transparent 2px);
+        background-size: 300px 300px;
+        animation: snow-fall-layer2 5s linear infinite;
+        opacity: 0.6;
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      mushroom-shape-icon {
+        --icon-size: 65px;
+        display: flex;
+        margin: -18px 0 10px -18px !important;
+        padding-right: 15px;
+      }
+
+      .mushroom-state-info {
+        position: relative;
+        z-index: 1;
+      }
+
+      @keyframes snow-fall-layer1 {
+        from { background-position: 0 0; }
+        to   { background-position: 0 400px; }
+      }
+      @keyframes snow-fall-layer2 {
+        from { background-position: 0 0; }
+        to   { background-position: 0 300px; }
+      }
+    mushroom-shape-icon$: |
+      .shape {
+        --shape-animation: var(--custom-icon-anim) !important;
+        box-shadow: var(--custom-icon-shadow) !important;
+        opacity: 1;
+        overflow: visible !important;
+      }
+
+      @keyframes compressor-rumble {
+        0% { transform: translate(0, 0); }
+        25% { transform: translate(-1px, 0.5px); }
+        50% { transform: translate(1px, -0.5px); }
+        75% { transform: translate(-0.5px, 0.5px); }
+        100% { transform: translate(0, 0); }
+      }
+
+```
+</details>
+
+<details>
 <summary><strong>40 - Vibration</strong></summary>
 
 ```yaml
@@ -8781,8 +8916,9 @@ type: custom:alarmo-card
 entity: alarm_control_panel.alarmo
 keep_keypad_visible: true
 card_mod:
-  style: |
+  style: >
     {% set state = states(config.entity) %}
+
 
     {% if state == 'disarmed' %}
       {% set color = '0, 255, 100' %}  /* Green */
@@ -8793,59 +8929,62 @@ card_mod:
       {% set glow_anim = 'glow-strobe 0.5s infinite' %}
 
     /* ARMED HOME */
+
     {% elif state == 'armed_home' %}
       {% set color = '0, 191, 255' %}  /* Blue */
       {% set glow_anim = 'glow-pulse 3s infinite' %}
       
     /* ARMED AWAY */
+
     {% elif 'armed' in state %}
       {% set color = '244, 67, 54' %}   /* Red */
       {% set glow_anim = 'glow-pulse 3s infinite' %}
 
     /* pending */
+
     {% elif state == 'pending' %}
       {% set color = '255, 152, 0' %}  /* Orange */
       {% set glow_anim = 'glow-pulse 1s infinite' %}
 
     /* loading and other */
+
     {% else %}
       {% set color = '158, 158, 158' %}  /* Grey */
       {% set glow_anim = 'none' %}
     {% endif %}
 
-    /* --- THE CARD Inner Glow --- */
-    ha-card {
-      background: #1c1c1c !important;
 
-      ## optional
-      ## border: 1px solid rgba({{ color }}, 0.5) !important;
-      border-radius: 25px !important;
-      color: white !important;
-      
-      /* The Inner Glow Logic */
-      box-shadow: inset 0 0 20px rgba({{ color }}, 0.2);
+    /* --- CARD Inner Glow --- */
+
+    ha-card {
+      /* The Inner Glow Logic paired with Native HA Shadow */
+      box-shadow: var(--ha-card-box-shadow, none), inset 0 0 20px rgba({{ color }}, 0.2);
       animation: {{ glow_anim }};
       transition: all 1s ease;
     }
 
-    /* --- ANIMATIONS (Card Glow Only) --- */
+    /* --- ANIMATIONS --- */
+
+    /* Appended native HA box-shadow to prevent the outer shadow from flickering
+    or disappearing */
 
     @keyframes glow-breathe {
-      0%   { box-shadow: inset 0 0 10px rgba({{ color }}, 0.1); }
-      50%  { box-shadow: inset 0 0 60px rgba({{ color }}, 0.4); border-color: rgba({{ color }}, 0.8); }
-      100% { box-shadow: inset 0 0 10px rgba({{ color }}, 0.1); }
+      0%   { box-shadow: var(--ha-card-box-shadow, none), inset 0 0 10px rgba({{ color }}, 0.1); }
+      50%  { box-shadow: var(--ha-card-box-shadow, none), inset 0 0 60px rgba({{ color }}, 0.4); }
+      100% { box-shadow: var(--ha-card-box-shadow, none), inset 0 0 10px rgba({{ color }}, 0.1); }
     }
 
+
     @keyframes glow-pulse {
-      0%   { box-shadow: inset 0 0 20px rgba({{ color }}, 0.2); }
-      50%  { box-shadow: inset 0 0 50px rgba({{ color }}, 0.6); }
-      100% { box-shadow: inset 0 0 20px rgba({{ color }}, 0.2); }
+      0%   { box-shadow: var(--ha-card-box-shadow, none), inset 0 0 20px rgba({{ color }}, 0.2); }
+      50%  { box-shadow: var(--ha-card-box-shadow, none), inset 0 0 50px rgba({{ color }}, 0.6); }
+      100% { box-shadow: var(--ha-card-box-shadow, none), inset 0 0 20px rgba({{ color }}, 0.2); }
     }
 
     @keyframes glow-strobe {
-      0%   { box-shadow: inset 0 0 10px rgba({{ color }}, 0.1); }
-      50%  { box-shadow: inset 0 0 100px rgba({{ color }}, 0.9); background: rgba({{ color }}, 0.1); }
-      100% { box-shadow: inset 0 0 10px rgba({{ color }}, 0.1); }
+      0%   { box-shadow: var(--ha-card-box-shadow, none), inset 0 0 10px rgba({{ color }}, 0.1); background: transparent; }
+      50%  { box-shadow: var(--ha-card-box-shadow, none), inset 0 0 100px rgba({{ color }}, 0.9); background: rgba({{ color }}, 0.1); }
+      100% { box-shadow: var(--ha-card-box-shadow, none), inset 0 0 10px rgba({{ color }}, 0.1); background: transparent; }
     }
 
 ```
