@@ -1363,6 +1363,7 @@ show_label: true
 variables:
   sensor_status: sensor.smart_fridge_status
   sensor_door: binary_sensor.smart_fridge_door
+  sensor_door2: ""
   sensor_temp_fridge: sensor.smart_fridge_temp_fridge
   sensor_temp_freezer: sensor.smart_fridge_temp_freezer
   sensor_power: sensor.smart_fridge_power
@@ -1374,13 +1375,15 @@ variables:
   state_defrost: defrost, defrosting
 tap_action:
   action: more-info
-label: >
-  [[[ return entity.state.replace(/[-_]/g, ' ').replace(/\b\w/g, c =>
-  c.toUpperCase()); ]]]
+label: |
+  [[[ return entity ? entity.state : 'Entity Setup Required'; ]]]
 icon: |
   [[[ 
-    let door = states[variables.sensor_door];
-    return (door && (door.state === 'on' || door.state === 'open')) ? 'mdi:fridge-alert' : 'mdi:fridge'; 
+    let d1 = states[variables.sensor_door];
+    let d2 = states[variables.sensor_door2];
+    let d1_open = d1 && (d1.state === 'on' || d1.state === 'open');
+    let d2_open = d2 && (d2.state === 'on' || d2.state === 'open');
+    return (d1_open || d2_open) ? 'mdi:fridge-alert' : 'mdi:fridge'; 
   ]]]
 custom_fields:
   bg1: " "
@@ -1388,6 +1391,7 @@ custom_fields:
   badge1: " "
   badge2: " "
   bar: " "
+  door_dash: " "
 styles:
   card:
     - height: 95px !important
@@ -1496,9 +1500,26 @@ styles:
       - box-shadow: 0 0 10px rgba(var(--appliance-color), 0.5)
       - transition: width 0.5s ease, background 0.5s ease
       - z-index: 1
+    door_dash:
+      - position: absolute
+      - top: 50%
+      - left: 0
+      - transform: translateY(-50%)
+      - opacity: 0.8
+      - width: 4px
+      - height: 26px
+      - border-top-right-radius: 4px
+      - border-bottom-right-radius: 4px
+      - display: var(--door-dash-display)
+      - background: rgb(var(--door-dash-color))
+      - box-shadow: var(--door-dash-glow)
+      - transition: background 0.4s ease, box-shadow 0.4s ease
+      - z-index: 2
+      - pointer-events: none
 extra_styles: |
   [[[
-    let ent_door = variables.sensor_door;
+    let ent_door1 = variables.sensor_door;
+    let ent_door2 = variables.sensor_door2;
     let ent_temp_f = variables.sensor_temp_fridge;
     let ent_temp_z = variables.sensor_temp_freezer;
     let ent_power = variables.sensor_power; 
@@ -1514,13 +1535,20 @@ extra_styles: |
     let status = states[variables.sensor_status] ? states[variables.sensor_status].state.toLowerCase() : 'unknown';
     let status_clean = status.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
     
-    let door_state_val = states[ent_door] ? states[ent_door].state.toLowerCase() : 'unknown';
-    let door_open = door_state_val === 'on' || door_state_val === 'open';
+    let door1_val = states[ent_door1] ? states[ent_door1].state.toLowerCase() : 'unknown';
+    let door2_val = states[ent_door2] ? states[ent_door2].state.toLowerCase() : 'unknown';
+    
+    let bad_states = ['unknown', 'unavailable', ''];
+    let d1_valid = !bad_states.includes(door1_val);
+    let d2_valid = !bad_states.includes(door2_val);
+    
+    let d1_open = d1_valid && (door1_val === 'on' || door1_val === 'open');
+    let d2_open = d2_valid && (door2_val === 'on' || door2_val === 'open');
+    let door_open = d1_open || d2_open;
 
     let raw_temp_f = states[ent_temp_f] ? states[ent_temp_f].state : '';
     let raw_temp_z = states[ent_temp_z] ? states[ent_temp_z].state : '';
     
-    let bad_states = ['unknown', 'unavailable', ''];
     let t_f = !bad_states.includes(raw_temp_f) ? raw_temp_f + '°' : '';
     let t_z = !bad_states.includes(raw_temp_z) ? raw_temp_z + '°' : '';
 
@@ -1575,10 +1603,33 @@ extra_styles: |
         overlay_img = `radial-gradient(ellipse at center, rgba(255,193,7,0.8) 0%, transparent 60%), radial-gradient(ellipse at center, rgba(255,193,7,0.6) 0%, transparent 60%)`;
     }
 
+    let d1_c = color;
+    let corner_display = 'none';
+    let dash_color = color;
+    let dash_glow = 'none';
+    let dash_display = 'none';
+
+    if (d1_valid && d2_valid) {
+        corner_display = 'block';
+        dash_display = 'block';
+        d1_c = d1_open ? '244, 67, 54' : color;
+        dash_color = d2_open ? '244, 67, 54' : color;
+        dash_glow = d2_open ? '2px 0 6px rgba(244, 67, 54, 0.6)' : 'none';
+    } else if (d1_valid || d2_valid) {
+        corner_display = 'block';
+        let open = d1_valid ? d1_open : d2_open;
+        d1_c = open ? '244, 67, 54' : color;
+    }
+
     let c_cool = '33, 150, 243';
     let c_alert = '244, 67, 54';
 
-    let badge1 = door_open ? '⚠️ DOOR OPEN' : [status_clean, power_text].filter(Boolean).join(' • ');
+    let badge1_text = '';
+    if (d1_open && d2_open) badge1_text = '⚠️ DOORS OPEN';
+    else if (d1_open || d2_open) badge1_text = '⚠️ DOOR OPEN';
+    else badge1_text = [status_clean, power_text].filter(Boolean).join(' • ');
+
+    let badge1 = badge1_text;
     let b1_c = door_open ? c_alert : color;
     let b1_bg = `rgba(${b1_c}, 0.15)`;
     let b1_border = `1px solid rgba(${b1_c}, 0.3)`;
@@ -1612,15 +1663,6 @@ extra_styles: |
         }
     }
 
-    let corner_color = color;
-    let corner_display = 'none';
-    if (states[ent_door] && !['unknown', 'unavailable', ''].includes(door_state_val)) {
-        corner_display = 'block';
-        if (door_open) {
-            corner_color = '244, 67, 54';
-        }
-    }
-
     return `
       #card {
         --appliance-color: ${color};
@@ -1632,8 +1674,11 @@ extra_styles: |
         --appliance-anim-drip: ${anim_drip};
         --appliance-frost-shadow: ${frost_shadow};
         --appliance-overlay-bg: ${overlay_img};
-        --door-corner-color: rgb(${corner_color});
+        --door-corner-color: rgb(${d1_c});
         --door-corner-display: ${corner_display};
+        --door-dash-color: ${dash_color};
+        --door-dash-glow: ${dash_glow};
+        --door-dash-display: ${dash_display};
         box-shadow: ${card_shadow} !important;
       }
       #card::after {
@@ -2990,6 +3035,7 @@ variables:
   ent_switch: switch.smart_plug
   ent_power: sensor.smart_plug_power
   sensor_door: binary_sensor.fridge_door_contact
+  sensor_door2: ""
   sensor_temp_fridge: sensor.fridge_temp
   sensor_temp_freezer: sensor.fridge_temp_freezer
   thresh_cooling: 1
@@ -3121,14 +3167,33 @@ styles:
       - transition: width 0.5s ease
       - display: var(--bar-display)
       - z-index: 5
+    door_dash:
+      - position: absolute
+      - top: 50%
+      - left: 0
+      - transform: translateY(-50%)
+      - opacity: 0.8
+      - width: 4px
+      - height: 26px
+      - border-top-right-radius: 4px
+      - border-bottom-right-radius: 4px
+      - display: var(--door-dash-display)
+      - background: rgb(var(--door-dash-color))
+      - box-shadow: var(--door-dash-glow)
+      - transition: background 0.4s ease, box-shadow 0.4s ease
+      - z-index: 2
+      - pointer-events: none
 tap_action:
   action: more-info
 label: |
   [[[ return entity ? entity.state : 'Entity Setup Required'; ]]]
 icon: |
   [[[ 
-    let door = states[variables.sensor_door];
-    return (door && (door.state === 'on' || door.state === 'open')) ? 'mdi:fridge-alert' : 'mdi:fridge'; 
+    let d1 = states[variables.sensor_door];
+    let d2 = states[variables.sensor_door2];
+    let d1_open = d1 && (d1.state === 'on' || d1.state === 'open');
+    let d2_open = d2 && (d2.state === 'on' || d2.state === 'open');
+    return (d1_open || d2_open) ? 'mdi:fridge-alert' : 'mdi:fridge'; 
   ]]]
 custom_fields:
   bg1: " "
@@ -3136,11 +3201,13 @@ custom_fields:
   badge1: " "
   badge2: " "
   bar: " "
+  door_dash: " "
 extra_styles: |
   [[[
     let ent_switch = variables.ent_switch;
     let ent_power = variables.ent_power;
-    let ent_door = variables.sensor_door;
+    let ent_door1 = variables.sensor_door;
+    let ent_door2 = variables.sensor_door2;
     let ent_temp_f = variables.sensor_temp_fridge;
     let ent_temp_z = variables.sensor_temp_freezer;
     
@@ -3158,13 +3225,20 @@ extra_styles: |
     let power = is_power_valid ? Math.round(parseFloat(power_state.state)) : 0;
     let power_text = is_power_valid ? ` • ${power}W` : '';
 
-    let door_state = (ent_door && states[ent_door]) ? states[ent_door].state.toLowerCase() : 'unknown';
-    let door_open = door_state === 'on' || door_state === 'open';
+    let door1_val = (ent_door1 && states[ent_door1]) ? states[ent_door1].state.toLowerCase() : 'unknown';
+    let door2_val = (ent_door2 && states[ent_door2]) ? states[ent_door2].state.toLowerCase() : 'unknown';
+    
+    let bad_states = ['unknown', 'unavailable', ''];
+    let d1_valid = !bad_states.includes(door1_val);
+    let d2_valid = !bad_states.includes(door2_val);
+    
+    let d1_open = d1_valid && (door1_val === 'on' || door1_val === 'open');
+    let d2_open = d2_valid && (door2_val === 'on' || door2_val === 'open');
+    let door_open = d1_open || d2_open;
 
     let raw_temp_f = states[ent_temp_f] ? states[ent_temp_f].state : '';
     let raw_temp_z = states[ent_temp_z] ? states[ent_temp_z].state : '';
     
-    let bad_states = ['unknown', 'unavailable', ''];
     let t_f = !bad_states.includes(raw_temp_f) ? raw_temp_f + '°' : '';
     let t_z = !bad_states.includes(raw_temp_z) ? raw_temp_z + '°' : '';
 
@@ -3219,6 +3293,24 @@ extra_styles: |
         }
     }
 
+    let d1_c = color;
+    let corner_display = 'none';
+    let dash_color = color;
+    let dash_glow = 'none';
+    let dash_display = 'none';
+
+    if (d1_valid && d2_valid) {
+        corner_display = 'block';
+        dash_display = 'block';
+        d1_c = d1_open ? '244, 67, 54' : color;
+        dash_color = d2_open ? '244, 67, 54' : color;
+        dash_glow = d2_open ? '2px 0 6px rgba(244, 67, 54, 0.6)' : 'none';
+    } else if (d1_valid || d2_valid) {
+        corner_display = 'block';
+        let open = d1_valid ? d1_open : d2_open;
+        d1_c = open ? '244, 67, 54' : color;
+    }
+
     if (door_open) {
         color = '244, 67, 54';
         card_shadow = 'inset 0 0 50px rgba(244, 67, 54, 0.15)';
@@ -3231,18 +3323,16 @@ extra_styles: |
         bg_d2 = 'none';
     }
 
-    let badge1 = door_open ? '⚠️ DOOR OPEN' : `${status_text}${power_text}`;
+    let badge1_text = '';
+    if (d1_open && d2_open) badge1_text = '⚠️ DOORS OPEN';
+    else if (d1_open || d2_open) badge1_text = '⚠️ DOOR OPEN';
+    else badge1_text = `${status_text}${power_text}`;
+
+    let badge1 = badge1_text;
     let b1_c = door_open ? '244, 67, 54' : color;
     let b1_bg = `rgba(${b1_c}, 0.15)`;
     let b1_border = `1px solid rgba(${b1_c}, 0.3)`;
     let b1_bl = `2px solid rgb(${b1_c})`;
-
-    let corner_color = color;
-    let corner_display = 'none';
-    if (ent_door && door_state && !['unknown', 'unavailable', ''].includes(door_state)) {
-        corner_display = 'block';
-        if (door_open) corner_color = '244, 67, 54';
-    }
 
     let badge2 = '';
     let b2_bg = 'transparent'; let b2_bl = 'none'; let b2_br = 'none'; let b2_border = 'none';
@@ -3288,8 +3378,11 @@ extra_styles: |
         --appliance-anim-drip: ${anim_drip};
         --appliance-frost-shadow: ${frost_shadow};
         --appliance-overlay-bg: ${overlay_img};
-        --door-corner-color: rgb(${corner_color});
+        --door-corner-color: rgb(${d1_c});
         --door-corner-display: ${corner_display};
+        --door-dash-color: ${dash_color};
+        --door-dash-glow: ${dash_glow};
+        --door-dash-display: ${dash_display};
         --bar-display: ${bar_disp};
         box-shadow: ${card_shadow} !important;
       }
